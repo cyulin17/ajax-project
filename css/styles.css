@@ -1,0 +1,184 @@
+#map {
+  height: 100%;
+}
+
+a {
+  display: block;
+}
+
+a,
+button {
+  cursor: pointer;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo,
+.favorites,
+.text label {
+  font-family: 'Varela Round', sans-serif;
+}
+
+.logo {
+  margin: 20px;
+  font-size: 35px;
+  font-weight: 900;
+  color: #000;
+}
+
+.favorites {
+  margin: 30px 20px;
+  font-size: 18px;
+  color: #000;
+}
+
+.image {
+  background: url("https://images.pexels.com/photos/6412830/pexels-photo-6412830.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260") no-repeat center;
+  background-size: cover;
+  height: 700px;
+}
+
+.text label {
+  font-size: 30px;
+}
+
+.search-home {
+  position: absolute;
+  top: 40%;
+  left: 30%;
+}
+
+.text {
+  position: absolute;
+  top: 35%;
+  left: 30%;
+  color: #fff;
+  font-size: 25px;
+}
+
+input {
+  width: 500px;
+  height: 45px;
+  border: none;
+  border-radius: 5px 0 0 5px;
+  padding-left: 10px;
+}
+
+input::placeholder {
+  color: #adb5bd;
+  font-size: 16px;
+}
+
+input:focus {
+  outline: none;
+}
+
+.search-button {
+  width: 100px;
+  height: 45px;
+  border: none;
+  background-color: #ff9e00;
+  border-radius: 0 5px 5px 0;
+  vertical-align: top;
+}
+
+.fa-search {
+  font-size: 25px;
+  color: #fff;
+}
+
+.fas-star {
+  color: #000;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+}
+
+.search-bar button {
+  width: 100px;
+  height: 45px;
+  border: none;
+  background-color: black;
+  border-radius: 0 5px 5px 0;
+  vertical-align: top;
+  box-shadow: 1px 1px 10px 5px #e9ecef;
+}
+
+.search-bar input {
+  width: 500px;
+  height: 45px;
+  border: none;
+  border-radius: 5px 0 0 5px;
+  box-shadow: 1px 1px 10px 5px #e9ecef;
+}
+
+.search-result {
+  width: 1250px;
+  height: 650px;
+  display: flex;
+  margin-top: 50px;
+}
+
+.one-third-column {
+  width: calc(100% / 3);
+  border: 1px solid #d0d0d0;
+  border-right: none;
+}
+
+#lists li p {
+  color: #777;
+}
+
+.star-rating {
+  margin-right: 10px;
+}
+
+.fa-star,
+.fa-star-half-alt {
+  color: #ff9e00;
+}
+
+.number-rating {
+  color: #f00;
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.two-third-column {
+  width: 66%;
+  border: 1px solid #d0d0d0;
+  border-left: none;
+}
+
+div.one-third-column {
+  overflow: auto;
+}
+
+#lists {
+  margin: 0;
+  padding: 0;
+}
+
+#lists li {
+  height: 130px;
+  border-bottom: 1px solid #d0d0d0;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#lists li h2 {
+  margin: 0;
+}
+
+#lists li:last-child {
+  border-bottom: none;
+}
+
+#lists li:hover {
+  background-color: rgba(255, 237, 188, 0.2);
+}

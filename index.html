@@ -1,20 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AJAX Project</title>
   <link rel="icon" href="images/favicon.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
+  <!-- navigation -->
   <header>
+
+      <div class="row">
+        <div class="nav">
+          <a href="#" class="logo">BobaFinder</a>
+          <a href="#" class="favorites">Favorites</a>
+        </div>
+      </div>
   </header>
+
   <main>
+  <!-- Home -->
+    <div data-view="home-page">
+      <div class="row">
+        <div class="image">
+          <div class="text">
+            <label for="search">Grab a Boba Tea Near You</label>
+          </div>
+          <div class="search-home">
+            <input type="text" name="search" placeholder="Enter a Zipcode" /><button
+              class="search-button"><i class="fas fa-search"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- search result -->
+    <div class="hidden" data-view="result-page">
+      <div class="row">
+        <div class="search-bar"><input type="text" name="search" placeholder="Enter a Zipcode" /><button
+            class="search-button"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="search-result container">
+          <div class="one-third-column">
+            <ul id="lists">
+            </ul>
+          </div>
+          <div id="map" class="two-third-column"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Store information page-->
+
+
   </main>
+
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=MYKEY&libraries=places&callback=initMap">
+  </script>
+
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
 </body>
+
 </html>
