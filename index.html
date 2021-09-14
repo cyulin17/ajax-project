@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Varela+Round&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600;700;800;900&family=Varela+Round&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/styles.css">
@@ -19,16 +20,16 @@
   <!-- navigation -->
   <header>
 
-      <div class="row">
-        <div class="nav">
-          <a href="#" class="logo">BobaFinder</a>
-          <a href="#" class="favorites">Favorites</a>
-        </div>
+    <div class="row">
+      <div class="nav">
+        <a href="#" class="logo">BobaFinder</a>
+        <a href="#" class="favorites">Favorites</a>
       </div>
+    </div>
   </header>
 
   <main>
-  <!-- Home -->
+    <!-- Home -->
     <div data-view="home-page">
       <div class="row">
         <div class="image">
@@ -36,8 +37,8 @@
             <label for="search">Grab a Boba Tea Near You</label>
           </div>
           <div class="search-home">
-            <input type="text" name="search" placeholder="Enter a Zipcode" /><button
-              class="search-button"><i class="fas fa-search"></i></button>
+            <input type="text" name="search" placeholder="Enter a Zipcode" /><button class="search-button"><i
+                class="fas fa-search"></i></button>
           </div>
         </div>
       </div>
@@ -62,13 +63,71 @@
     </div>
 
     <!-- Store information page-->
+    <div class="hidden" data-view="stores">
+      <div class="row">
+        <div class="search-bar"><input type="text" name="search" placeholder="Enter a Zipcode" /><button
+            class="search-button"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+
+      <div class="container store_information">
+        <div class="row">
+          <div class="store-header">
+            <div id="store-image" class="info-box">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="photo-container">
+            <ul id="photos" class="photo-box"></ul>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="location-hours">
+            <div id="hours" class="half-column opening-hours">
+            </div>
+            <div id="location" class="half-column address-phone">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="review">
+            <ul id="review-lists"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My favorites -->
+    <div class="hidden" data-view="favorites-page">
+      <div class="row">
+        <div class="search-bar"><input type="text" name="search" placeholder="Enter a Zipcode" /><button
+            class="search-button"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+
+      <div class="favorite-stores container">
+        <div class="row">
+          <div class="favorite-header">
+            <h2>Favorites</h2>
+          </div>
+        </div>
+
+        <div class="row">
+          <ul class="favorite-list"></ul>
+        </div>
+
+      </div>
 
 
+    </div>
   </main>
 
   <script async
-    src="https://maps.googleapis.com/maps/api/js?key=MYKEY&libraries=places&callback=initMap">
-  </script>
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBG2u-pzXvsMhKqX7RVP94rUrSKVcJcmOw&libraries=places&callback=initMap"></script>
 
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
