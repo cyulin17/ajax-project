@@ -2,6 +2,10 @@
   height: 100%;
 }
 
+.row {
+  margin: 15px 0;
+}
+
 a {
   display: block;
 }
@@ -118,7 +122,6 @@ input:focus {
 }
 
 .search-result {
-  width: 1250px;
   height: 650px;
   display: flex;
   margin-top: 50px;
@@ -128,6 +131,35 @@ input:focus {
   width: calc(100% / 3);
   border: 1px solid #d0d0d0;
   border-right: none;
+}
+
+.location-hours {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #d0d0d0;
+  padding-bottom: 20px;
+}
+
+.location-hours p {
+  font-family: 'Nunito Sans', sans-serif;
+  margin: 0;
+}
+
+#hours {
+  padding: 0 120px;
+}
+
+.opening-hours h2,
+.address-phone h2 {
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 900;
+}
+
+.comment h4,
+.comment p,
+.comment h5 {
+  margin: 8px 0;
+  font-family: 'Nunito Sans', sans-serif;
 }
 
 #lists li p {
@@ -159,6 +191,21 @@ div.one-third-column {
   overflow: auto;
 }
 
+.review {
+  border-top: 1px solid #d0d0d0;
+  justify-content: center;
+}
+
+#review-lists li {
+  display: flex;
+  margin: 30px;
+}
+
+.more-info h2 {
+  text-align: center;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
 #lists {
   margin: 0;
   padding: 0;
@@ -181,4 +228,80 @@ div.one-third-column {
 
 #lists li:hover {
   background-color: rgba(255, 237, 188, 0.2);
+}
+
+.store-header {
+  margin-top: 50px;
+  padding: 30px;
+  border-bottom: 1px solid #d0d0d0;
+  height: 150px;
+}
+
+.info-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.store-info h1 {
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 900;
+  font-size: 42px;
+  margin: 10px 0;
+}
+
+.my_favorites {
+  margin: 35px 30px 0 0;
+}
+
+i.far {
+  color: #d0d0d0;
+}
+
+.my_favorites i.far:hover {
+  color: #ff9e00;
+}
+
+.fa-heart {
+  color: #ff9e00;
+}
+
+.half-column {
+  width: calc(100% / 2);
+  justify-content: center;
+}
+
+.photo-container {
+  display: flex;
+  justify-content: center;
+}
+
+.photo-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#photos img {
+  width: 200px;
+  height: 200px;
+  margin: 5px;
+  object-fit: cover;
+}
+
+.comment {
+  margin-left: 35px;
+}
+
+.comment h6 {
+  margin-top: 10px;
+  font-weight: normal;
+}
+
+.comment h4 {
+  font-weight: 800;
+}
+
+#review-lists img {
+  width: 60px;
+  height: 60px;
 }
