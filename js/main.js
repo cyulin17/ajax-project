@@ -298,7 +298,7 @@ $lists.addEventListener('click', function (e) {
       $review.appendChild($content);
       $reviewLists.appendChild($review);
     }
-    // add to favorite
+
     $storeImage.addEventListener('click', function (e) {
 
       if (e.target.tagName !== 'I') {
