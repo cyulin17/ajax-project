@@ -1,6 +1,4 @@
 /* global google */
-/* exported data */
-/* global data */
 var $btn = document.querySelectorAll('.search-button');
 var $lists = document.getElementById('lists');
 var $homePage = document.querySelector('[data-view="home-page"]');
@@ -12,12 +10,23 @@ var $photos = document.getElementById('photos');
 var $hours = document.getElementById('hours');
 var $location = document.getElementById('location');
 var $reviewLists = document.getElementById('review-lists');
+var $favoriteList = document.getElementById('favorite-list');
+var $favorites = document.querySelector('.favorites');
 var idArray = [];
+
+const data = JSON.parse(localStorage.getItem('my-list')) || [];
+function update() {
+  localStorage.setItem('my-list', JSON.stringify(data));
+}
+
+for (var list = data.length - 1; list >= 0; list--) {
+  var favList = renderFavoriteList(data[list]);
+  $favoriteList.prepend(favList);
+}
 
 for (var i = 0; i < $btn.length; i++) {
 
   $btn[i].addEventListener('click', function () {
-
     if (idArray.length > 0) {
       idArray = [];
     }
@@ -28,7 +37,7 @@ for (var i = 0; i < $btn.length; i++) {
 
     var zipcode = this.previousElementSibling.value;
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/textsearch/json%3Fquery=boba+in+' + zipcode + '%26key=AIzaSyBG2u-pzXvsMhKqX7RVP94rUrSKVcJcmOw');
+    xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/textsearch/json%3Fquery=boba+in+' + zipcode + '%26key=MYKEY');
     xhr.responseType = 'json';
     xhr.addEventListener('load', function () {
       function initMap() {
@@ -164,7 +173,7 @@ $lists.addEventListener('click', function (e) {
   var placeId = idArray[id];
 
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/details/json?place_id=' + placeId + '%26key=AIzaSyBG2u-pzXvsMhKqX7RVP94rUrSKVcJcmOw');
+  xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/details/json?place_id=' + placeId + '%26key=MYKEY');
   xhr.responseType = 'json';
   xhr.addEventListener('load', function () {
     // store-header
@@ -176,15 +185,25 @@ $lists.addEventListener('click', function (e) {
     $storeBox.appendChild($storeTitle);
     $storeImage.appendChild($storeBox);
 
-    var $heartBox = document.createElement('div');
-    var $heart = document.createElement('i');
-    $heart.className = 'far fa-heart fa-lg';
-    $heartBox.className = 'my_favorites';
-    $heartBox.appendChild($heart);
-    $storeImage.append($heartBox);
+    var addToFavorite = {
+      name: xhr.response.result.name,
+      rating: xhr.response.result.rating
+    };
 
+    var $heart = document.createElement('i');
+    $storeBox.appendChild($heart);
+    if (containObject(data, addToFavorite)) {
+      $heart.className = 'fas fa-heart fa-lg';
+    } else {
+      $heart.className = 'far fa-heart fa-lg';
+    }
+    $storeImage.append($storeBox);
+
+    var $ratingBox = document.createElement('div');
     var $starRating = document.createElement('span');
+    $ratingBox.appendChild($starRating);
     $starRating.className = 'star-rating';
+    $ratingBox.className = 'rating-box';
 
     var val = (xhr.response.result.rating) * 10;
     var fullStar = Math.floor(val / 10);
@@ -195,26 +214,27 @@ $lists.addEventListener('click', function (e) {
       var $fullStar = document.createElement('i');
       $fullStar.className = 'fas fa-star';
       $starRating.appendChild($fullStar);
-      $storeBox.appendChild($starRating);
+      $ratingBox.appendChild($starRating);
+
     }
 
     if (halfStar < 5 && fullStar < 5) {
       var $emptyStar = document.createElement('i');
       $emptyStar.className = 'far fa-star';
       $starRating.appendChild($emptyStar);
-      $storeBox.appendChild($starRating);
+      $ratingBox.appendChild($starRating);
     } else if (halfStar >= 5 && fullStar < 5) {
       var $halfStar = document.createElement('i');
       $halfStar.className = 'fas fa-star-half-alt';
       $starRating.appendChild($halfStar);
-      $storeBox.appendChild($starRating);
+      $ratingBox.appendChild($starRating);
     }
 
     for (var m = 1; m <= emptyStar; m++) {
       var $leftStar = document.createElement('i');
       $leftStar.className = 'far fa-star';
       $starRating.appendChild($leftStar);
-      $storeBox.appendChild($starRating);
+      $ratingBox.appendChild($starRating);
     }
 
     var $numberRating = document.createElement('span');
@@ -222,14 +242,15 @@ $lists.addEventListener('click', function (e) {
     var num = ratingnum.toFixed(1);
     $numberRating.textContent = num;
     $numberRating.className = 'number-rating';
-    $storeBox.appendChild($numberRating);
+    $ratingBox.appendChild($numberRating);
+    $storeImage.appendChild($ratingBox);
 
     // photos
     for (var n = 0; n < xhr.response.result.photos.length; n++) {
       var $photoItem = document.createElement('li');
       var $storePhoto = document.createElement('img');
       $storePhoto.className = 'photo-item';
-      $storePhoto.setAttribute('src', 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=250&photo_reference=' + xhr.response.result.photos[n].photo_reference + '&key=AIzaSyBG2u-pzXvsMhKqX7RVP94rUrSKVcJcmOw');
+      $storePhoto.setAttribute('src', 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=250&photo_reference=' + xhr.response.result.photos[n].photo_reference + '&key=MYKEY');
       $photoItem.appendChild($storePhoto);
       $photos.appendChild($photoItem);
     }
@@ -277,7 +298,182 @@ $lists.addEventListener('click', function (e) {
       $review.appendChild($content);
       $reviewLists.appendChild($review);
     }
+    // add to favorite
+    $storeImage.addEventListener('click', function (e) {
+
+      if (e.target.tagName !== 'I') {
+        return;
+      }
+
+      var value = event.target.previousElementSibling.textContent;
+
+      if (containObject(data, addToFavorite) === false) {
+        data.unshift(addToFavorite);
+        e.target.className = 'fas fa-heart fa-lg';
+        var favoriteList = renderFavorites(addToFavorite);
+        $favoriteList.prepend(favoriteList);
+        update();
+      } else if (e.target.className === 'fas fa-heart fa-lg') {
+        for (var num = data.length - 1; num >= 0; num--) {
+          if (data[num].name === value) {
+            data.splice(num, 1);
+            $favoriteList.removeChild($favoriteList.childNodes[num]);
+          }
+        }
+        update();
+        e.target.className = 'far fa-heart fa-lg';
+      }
+    });
+    function renderFavorites(favorite) {
+
+      var $favoriteItem = document.createElement('li');
+
+      var $storeBox = document.createElement('div');
+      var $storeTitle = document.createElement('p');
+      $storeTitle.textContent = xhr.response.result.name;
+      $storeBox.className = 'store-info';
+      $storeTitle.className = 'store_title';
+      $storeBox.appendChild($storeTitle);
+      $favoriteItem.appendChild($storeBox);
+
+      var $heart = document.createElement('i');
+      $heart.className = 'fas fa-heart fa-lg';
+      $storeBox.appendChild($heart);
+      $favoriteItem.append($storeBox);
+
+      var $ratingBox = document.createElement('div');
+      var $starRating = document.createElement('span');
+      $ratingBox.appendChild($starRating);
+      $starRating.className = 'star-rating';
+      $ratingBox.className = 'rating-box';
+
+      var val = (xhr.response.result.rating) * 10;
+      var fullStar = Math.floor(val / 10);
+      var halfStar = val % 10;
+      var emptyStar = 5 - fullStar - 1;
+
+      for (var k = 1; k <= fullStar; k++) {
+        var $fullStar = document.createElement('i');
+        $fullStar.className = 'fas fa-star';
+        $starRating.appendChild($fullStar);
+        $ratingBox.appendChild($starRating);
+      }
+
+      if (halfStar < 5 && fullStar < 5) {
+        var $emptyStar = document.createElement('i');
+        $emptyStar.className = 'far fa-star';
+        $starRating.appendChild($emptyStar);
+        $ratingBox.appendChild($starRating);
+      } else if (halfStar >= 5 && fullStar < 5) {
+        var $halfStar = document.createElement('i');
+        $halfStar.className = 'fas fa-star-half-alt';
+        $starRating.appendChild($halfStar);
+        $ratingBox.appendChild($starRating);
+      }
+
+      for (var m = 1; m <= emptyStar; m++) {
+        var $leftStar = document.createElement('i');
+        $leftStar.className = 'far fa-star';
+        $starRating.appendChild($leftStar);
+        $ratingBox.appendChild($starRating);
+      }
+
+      var $numberRating = document.createElement('span');
+      var ratingnum = xhr.response.result.rating;
+      var num = ratingnum.toFixed(1);
+      $numberRating.textContent = num;
+      $numberRating.className = 'number-rating';
+      $ratingBox.appendChild($numberRating);
+      $favoriteItem.appendChild($ratingBox);
+
+      return $favoriteItem;
+    }
 
   });
   xhr.send();
+
 });
+
+$favorites.addEventListener('click', function () {
+
+  $favoritePage.className = '';
+  $stores.className = 'hidden';
+  $homePage.className = 'hidden';
+  $resultPage.className = 'hidden';
+
+});
+
+function containObject(array, obj) {
+
+  for (var i = array.length - 1; i >= 0; i--) {
+    if (array[i].name === obj.name) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function renderFavoriteList(favorite) {
+
+  var $favoriteItem = document.createElement('li');
+
+  var $storeBox = document.createElement('div');
+  var $storeTitle = document.createElement('p');
+  $storeTitle.textContent = data[list].name;
+  $storeBox.className = 'store-info';
+  $storeTitle.className = 'store_title';
+  $storeBox.appendChild($storeTitle);
+  $favoriteItem.appendChild($storeBox);
+
+  var $heart = document.createElement('i');
+  $heart.className = 'fas fa-heart fa-lg';
+  $storeBox.appendChild($heart);
+  $favoriteItem.append($storeBox);
+
+  var $ratingBox = document.createElement('div');
+  var $starRating = document.createElement('span');
+  $ratingBox.appendChild($starRating);
+  $starRating.className = 'star-rating';
+  $ratingBox.className = 'rating-box';
+
+  var val = (data[list].rating) * 10;
+  var fullStar = Math.floor(val / 10);
+  var halfStar = val % 10;
+  var emptyStar = 5 - fullStar - 1;
+
+  for (var k = 1; k <= fullStar; k++) {
+    var $fullStar = document.createElement('i');
+    $fullStar.className = 'fas fa-star';
+    $starRating.appendChild($fullStar);
+    $ratingBox.appendChild($starRating);
+  }
+
+  if (halfStar < 5 && fullStar < 5) {
+    var $emptyStar = document.createElement('i');
+    $emptyStar.className = 'far fa-star';
+    $starRating.appendChild($emptyStar);
+    $ratingBox.appendChild($starRating);
+  } else if (halfStar >= 5 && fullStar < 5) {
+    var $halfStar = document.createElement('i');
+    $halfStar.className = 'fas fa-star-half-alt';
+    $starRating.appendChild($halfStar);
+    $ratingBox.appendChild($starRating);
+  }
+
+  for (var m = 1; m <= emptyStar; m++) {
+    var $leftStar = document.createElement('i');
+    $leftStar.className = 'far fa-star';
+    $starRating.appendChild($leftStar);
+    $ratingBox.appendChild($starRating);
+  }
+
+  var $numberRating = document.createElement('span');
+  var ratingnum = data[list].rating;
+  var num = ratingnum.toFixed(1);
+  $numberRating.textContent = num;
+  $numberRating.className = 'number-rating';
+  $ratingBox.appendChild($numberRating);
+  $favoriteItem.appendChild($ratingBox);
+
+  return $favoriteItem;
+}
