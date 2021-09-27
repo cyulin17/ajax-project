@@ -162,6 +162,13 @@ input:focus {
   font-family: 'Nunito Sans', sans-serif;
 }
 
+.store-info p {
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 800;
+  font-size: 25px;
+  margin: 10px 0;
+}
+
 #lists li p {
   color: #777;
 }
@@ -191,14 +198,46 @@ div.one-third-column {
   overflow: auto;
 }
 
-.review {
+#review-lists li {
+  display: flex;
+  margin: 30px;
+}
+
+#lists li {
+  height: 130px;
+  border-bottom: 1px solid #d0d0d0;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.rating-box {
+  margin-top: -20px;
+}
+
+#favorite-list {
+  margin-top: -5px;
+}
+
+#favorite-list li {
+  border-bottom: 1px solid #d0d0d0;
+  padding: 15px 30px 25px 30px;
+}
+
+#favorite-list li:last-child {
+  border-bottom: none;
+}
+
+#favorite-list i.fa-heart {
+  margin: 20px 30px 0 0;
+}
+
+#favorite-list .review {
   border-top: 1px solid #d0d0d0;
   justify-content: center;
 }
 
-#review-lists li {
-  display: flex;
-  margin: 30px;
+#favorite-list .rating-box {
+  margin-top: -12px;
 }
 
 .more-info h2 {
@@ -211,11 +250,11 @@ div.one-third-column {
   padding: 0;
 }
 
-#lists li {
-  height: 130px;
-  border-bottom: 1px solid #d0d0d0;
-  margin-left: 10px;
-  margin-right: 10px;
+.favorite-header h2 {
+  padding: 12px 20px;
+  font-size: 28px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 800;
 }
 
 #lists li h2 {
@@ -237,31 +276,22 @@ div.one-third-column {
   height: 150px;
 }
 
-.info-box {
+.store-info {
   display: flex;
   justify-content: space-between;
-}
-
-.store-info h1 {
-  font-family: 'Nunito Sans', sans-serif;
-  font-weight: 900;
-  font-size: 42px;
-  margin: 10px 0;
-}
-
-.my_favorites {
-  margin: 35px 30px 0 0;
 }
 
 i.far {
   color: #d0d0d0;
 }
 
-.my_favorites i.far:hover {
+i.far:hover {
   color: #ff9e00;
 }
 
 .fa-heart {
+  margin: 38px 30px 0 0;
+  display: flex;
   color: #ff9e00;
 }
 
@@ -304,4 +334,10 @@ i.far {
 #review-lists img {
   width: 60px;
   height: 60px;
+}
+
+.favorite-header {
+  margin-top: 50px;
+  height: 60px;
+  background-color: rgba(253, 183, 31, 0.411);
 }

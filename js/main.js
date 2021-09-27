@@ -298,7 +298,7 @@ $lists.addEventListener('click', function (e) {
       $review.appendChild($content);
       $reviewLists.appendChild($review);
     }
-    // add to favorites
+
     $storeImage.addEventListener('click', function (e) {
 
       if (e.target.tagName !== 'I') {
@@ -313,7 +313,6 @@ $lists.addEventListener('click', function (e) {
         var favoriteList = renderFavorites(addToFavorite);
         $favoriteList.prepend(favoriteList);
         update();
-        // remove from favorites
       } else if (e.target.className === 'fas fa-heart fa-lg') {
         for (var num = data.length - 1; num >= 0; num--) {
           if (data[num].name === value) {
