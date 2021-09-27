@@ -390,11 +390,101 @@ $lists.addEventListener('click', function (e) {
       return $favoriteItem;
     }
 
+    $storeImage.addEventListener('click', function (e) {
+
+      if (e.target.tagName !== 'I') {
+        return;
+      }
+
+      var value = event.target.previousElementSibling.textContent;
+
+      if (containObject(data, addToFavorite) === false) {
+        data.unshift(addToFavorite);
+        e.target.className = 'fas fa-heart fa-lg';
+        var favoriteList = renderFavorites(addToFavorite);
+        $favoriteList.prepend(favoriteList);
+        update();
+      } else if (e.target.className === 'fas fa-heart fa-lg') {
+        for (var num = data.length - 1; num >= 0; num--) {
+          if (data[num].name === value) {
+            data.splice(num, 1);
+            $favoriteList.removeChild($favoriteList.childNodes[num]);
+          }
+        }
+        update();
+        e.target.className = 'far fa-heart fa-lg';
+      }
+    });
+    function renderFavorites(favorite) {
+
+      var $favoriteItem = document.createElement('li');
+
+      var $storeBox = document.createElement('div');
+      var $storeTitle = document.createElement('p');
+      $storeTitle.textContent = xhr.response.result.name;
+      $storeBox.className = 'store-info';
+      $storeTitle.className = 'store_title';
+      $storeBox.appendChild($storeTitle);
+      $favoriteItem.appendChild($storeBox);
+
+      var $heart = document.createElement('i');
+      $heart.className = 'fas fa-heart fa-lg';
+      $storeBox.appendChild($heart);
+      $favoriteItem.append($storeBox);
+
+      var $ratingBox = document.createElement('div');
+      var $starRating = document.createElement('span');
+      $ratingBox.appendChild($starRating);
+      $starRating.className = 'star-rating';
+      $ratingBox.className = 'rating-box';
+
+      var val = (xhr.response.result.rating) * 10;
+      var fullStar = Math.floor(val / 10);
+      var halfStar = val % 10;
+      var emptyStar = 5 - fullStar - 1;
+
+      for (var k = 1; k <= fullStar; k++) {
+        var $fullStar = document.createElement('i');
+        $fullStar.className = 'fas fa-star';
+        $starRating.appendChild($fullStar);
+        $ratingBox.appendChild($starRating);
+      }
+
+      if (halfStar < 5 && fullStar < 5) {
+        var $emptyStar = document.createElement('i');
+        $emptyStar.className = 'far fa-star';
+        $starRating.appendChild($emptyStar);
+        $ratingBox.appendChild($starRating);
+      } else if (halfStar >= 5 && fullStar < 5) {
+        var $halfStar = document.createElement('i');
+        $halfStar.className = 'fas fa-star-half-alt';
+        $starRating.appendChild($halfStar);
+        $ratingBox.appendChild($starRating);
+      }
+
+      for (var m = 1; m <= emptyStar; m++) {
+        var $leftStar = document.createElement('i');
+        $leftStar.className = 'far fa-star';
+        $starRating.appendChild($leftStar);
+        $ratingBox.appendChild($starRating);
+      }
+
+      var $numberRating = document.createElement('span');
+      var ratingnum = xhr.response.result.rating;
+      var num = ratingnum.toFixed(1);
+      $numberRating.textContent = num;
+      $numberRating.className = 'number-rating';
+      $ratingBox.appendChild($numberRating);
+      $favoriteItem.appendChild($ratingBox);
+
+      return $favoriteItem;
+    }
+
   });
   xhr.send();
 
 });
-// view favorites
+
 $favorites.addEventListener('click', function () {
 
   $favoritePage.className = '';
