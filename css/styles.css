@@ -15,27 +15,25 @@ button {
   cursor: pointer;
 }
 
+body {
+  font-family: 'Varela Round', sans-serif;
+}
+
 .nav {
   display: flex;
   justify-content: space-between;
 }
 
-.logo,
-.favorites,
-.text label {
-  font-family: 'Varela Round', sans-serif;
-}
-
 .logo {
   margin: 20px;
-  font-size: 35px;
+  font-size: 2vw;
   font-weight: 900;
   color: #000;
 }
 
 .favorites {
   margin: 30px 20px;
-  font-size: 18px;
+  font-size: 1vw;
   color: #000;
 }
 
@@ -46,25 +44,29 @@ button {
 }
 
 .text label {
-  font-size: 30px;
+  font-size: 1.5vw;
 }
 
 .search-home {
   position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
   top: 40%;
-  left: 30%;
+  text-align: center;
 }
 
 .text {
   position: absolute;
+  left: 38.2vw;
   top: 35%;
-  left: 30%;
   color: #fff;
-  font-size: 25px;
+  font-size: 1.3vw;
 }
 
 input {
-  width: 500px;
+  width: 430px;
   height: 45px;
   border: none;
   border-radius: 5px 0 0 5px;
@@ -73,7 +75,7 @@ input {
 
 input::placeholder {
   color: #adb5bd;
-  font-size: 16px;
+  font-size: 0.8vw;
 }
 
 input:focus {
@@ -90,7 +92,7 @@ input:focus {
 }
 
 .fa-search {
-  font-size: 25px;
+  font-size: 1.3vw;
   color: #fff;
 }
 
@@ -124,6 +126,7 @@ input:focus {
 .search-result {
   height: 650px;
   display: flex;
+  flex-direction: row-reverse;
   margin-top: 50px;
 }
 
@@ -137,35 +140,37 @@ input:focus {
   display: flex;
   justify-content: center;
   border-top: 1px solid #d0d0d0;
-  padding-bottom: 20px;
+  padding: 20px 60px 20px 70px;
 }
 
 .location-hours p {
-  font-family: 'Nunito Sans', sans-serif;
   margin: 0;
 }
 
-#hours {
-  padding: 0 120px;
+.opening-hours h3,
+.address-phone h3,
+.review h3 {
+  font-weight: bold;
+  margin-left: 20px;
 }
 
-.opening-hours h2,
-.address-phone h2 {
-  font-family: 'Nunito Sans', sans-serif;
-  font-weight: 900;
+.opening-hours p,
+.address-phone p,
+.review p {
+  margin-left: 30px;
+  margin-right: 30px;
+  font-weight: normal;
 }
 
 .comment h4,
 .comment p,
 .comment h5 {
   margin: 8px 0;
-  font-family: 'Nunito Sans', sans-serif;
 }
 
 .store-info p {
-  font-family: 'Nunito Sans', sans-serif;
   font-weight: 800;
-  font-size: 25px;
+  font-size: 1vw;
   margin: 10px 0;
 }
 
@@ -185,7 +190,7 @@ input:focus {
 .number-rating {
   color: #f00;
   font-weight: 900;
-  font-size: 18px;
+  font-size: 1vw;
 }
 
 .two-third-column {
@@ -196,6 +201,14 @@ input:focus {
 
 div.one-third-column {
   overflow: auto;
+}
+
+.review {
+  padding-left: 70px;
+}
+
+#review-lists {
+  padding-left: 0;
 }
 
 #review-lists li {
@@ -242,7 +255,6 @@ div.one-third-column {
 
 .more-info h2 {
   text-align: center;
-  font-family: 'Nunito Sans', sans-serif;
 }
 
 #lists {
@@ -252,8 +264,7 @@ div.one-third-column {
 
 .favorite-header h2 {
   padding: 12px 20px;
-  font-size: 28px;
-  font-family: 'Nunito Sans', sans-serif;
+  font-size: 1.3vw;
   font-weight: 800;
 }
 
@@ -270,7 +281,6 @@ div.one-third-column {
 }
 
 .store-header {
-  margin-top: 50px;
   padding: 30px;
   border-bottom: 1px solid #d0d0d0;
   height: 150px;
@@ -297,7 +307,6 @@ i.far:hover {
 
 .half-column {
   width: calc(100% / 2);
-  justify-content: center;
 }
 
 .photo-container {
@@ -322,13 +331,13 @@ i.far:hover {
   margin-left: 35px;
 }
 
-.comment h6 {
+.comment h5 {
   margin-top: 10px;
   font-weight: normal;
 }
 
 .comment h4 {
-  font-weight: 800;
+  font-weight: bold;
 }
 
 #review-lists img {
