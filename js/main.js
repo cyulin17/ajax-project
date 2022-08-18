@@ -256,7 +256,7 @@ $lists.addEventListener('click', function (e) {
     }
 
     // store hours
-    var $opening = document.createElement('h2');
+    var $opening = document.createElement('h3');
     $opening.textContent = 'Opening Hours';
     $hours.appendChild($opening);
     for (var i = 0; i < xhr.response.result.opening_hours.weekday_text.length; i++) {
@@ -265,15 +265,15 @@ $lists.addEventListener('click', function (e) {
       $hours.appendChild($openHours);
     }
     // store location
-    var $contact = document.createElement('h2');
+    var $contact = document.createElement('h3');
     $contact.textContent = 'Address & Phone';
     $location.appendChild($contact);
     var $address = document.createElement('p');
     $address.textContent = 'Address: ' + xhr.response.result.formatted_address;
     $location.appendChild($address);
-    var $phone = document.querySelector('p');
+    var $phone = document.createElement('p');
     $phone.textContent = 'Phone: ' + xhr.response.result.formatted_phone_number;
-    $location.append($phone);
+    $location.appendChild($phone);
 
     // review
     for (var j = 0; j < xhr.response.result.reviews.length; j++) {
@@ -415,70 +415,71 @@ $lists.addEventListener('click', function (e) {
         e.target.className = 'far fa-heart fa-lg';
       }
     });
-    function renderFavorites(favorite) {
+    renderFavorites();
+    // function renderFavorites(favorite) {
 
-      var $favoriteItem = document.createElement('li');
+    //   var $favoriteItem = document.createElement('li');
 
-      var $storeBox = document.createElement('div');
-      var $storeTitle = document.createElement('p');
-      $storeTitle.textContent = xhr.response.result.name;
-      $storeBox.className = 'store-info';
-      $storeTitle.className = 'store_title';
-      $storeBox.appendChild($storeTitle);
-      $favoriteItem.appendChild($storeBox);
+    //   var $storeBox = document.createElement('div');
+    //   var $storeTitle = document.createElement('p');
+    //   $storeTitle.textContent = xhr.response.result.name;
+    //   $storeBox.className = 'store-info';
+    //   $storeTitle.className = 'store_title';
+    //   $storeBox.appendChild($storeTitle);
+    //   $favoriteItem.appendChild($storeBox);
 
-      var $heart = document.createElement('i');
-      $heart.className = 'fas fa-heart fa-lg';
-      $storeBox.appendChild($heart);
-      $favoriteItem.append($storeBox);
+    //   var $heart = document.createElement('i');
+    //   $heart.className = 'fas fa-heart fa-lg';
+    //   $storeBox.appendChild($heart);
+    //   $favoriteItem.append($storeBox);
 
-      var $ratingBox = document.createElement('div');
-      var $starRating = document.createElement('span');
-      $ratingBox.appendChild($starRating);
-      $starRating.className = 'star-rating';
-      $ratingBox.className = 'rating-box';
+    //   var $ratingBox = document.createElement('div');
+    //   var $starRating = document.createElement('span');
+    //   $ratingBox.appendChild($starRating);
+    //   $starRating.className = 'star-rating';
+    //   $ratingBox.className = 'rating-box';
 
-      var val = (xhr.response.result.rating) * 10;
-      var fullStar = Math.floor(val / 10);
-      var halfStar = val % 10;
-      var emptyStar = 5 - fullStar - 1;
+    //   var val = (xhr.response.result.rating) * 10;
+    //   var fullStar = Math.floor(val / 10);
+    //   var halfStar = val % 10;
+    //   var emptyStar = 5 - fullStar - 1;
 
-      for (var k = 1; k <= fullStar; k++) {
-        var $fullStar = document.createElement('i');
-        $fullStar.className = 'fas fa-star';
-        $starRating.appendChild($fullStar);
-        $ratingBox.appendChild($starRating);
-      }
+    //   for (var k = 1; k <= fullStar; k++) {
+    //     var $fullStar = document.createElement('i');
+    //     $fullStar.className = 'fas fa-star';
+    //     $starRating.appendChild($fullStar);
+    //     $ratingBox.appendChild($starRating);
+    //   }
 
-      if (halfStar < 5 && fullStar < 5) {
-        var $emptyStar = document.createElement('i');
-        $emptyStar.className = 'far fa-star';
-        $starRating.appendChild($emptyStar);
-        $ratingBox.appendChild($starRating);
-      } else if (halfStar >= 5 && fullStar < 5) {
-        var $halfStar = document.createElement('i');
-        $halfStar.className = 'fas fa-star-half-alt';
-        $starRating.appendChild($halfStar);
-        $ratingBox.appendChild($starRating);
-      }
+    //   if (halfStar < 5 && fullStar < 5) {
+    //     var $emptyStar = document.createElement('i');
+    //     $emptyStar.className = 'far fa-star';
+    //     $starRating.appendChild($emptyStar);
+    //     $ratingBox.appendChild($starRating);
+    //   } else if (halfStar >= 5 && fullStar < 5) {
+    //     var $halfStar = document.createElement('i');
+    //     $halfStar.className = 'fas fa-star-half-alt';
+    //     $starRating.appendChild($halfStar);
+    //     $ratingBox.appendChild($starRating);
+    //   }
 
-      for (var m = 1; m <= emptyStar; m++) {
-        var $leftStar = document.createElement('i');
-        $leftStar.className = 'far fa-star';
-        $starRating.appendChild($leftStar);
-        $ratingBox.appendChild($starRating);
-      }
+    //   for (var m = 1; m <= emptyStar; m++) {
+    //     var $leftStar = document.createElement('i');
+    //     $leftStar.className = 'far fa-star';
+    //     $starRating.appendChild($leftStar);
+    //     $ratingBox.appendChild($starRating);
+    //   }
 
-      var $numberRating = document.createElement('span');
-      var ratingnum = xhr.response.result.rating;
-      var num = ratingnum.toFixed(1);
-      $numberRating.textContent = num;
-      $numberRating.className = 'number-rating';
-      $ratingBox.appendChild($numberRating);
-      $favoriteItem.appendChild($ratingBox);
+    //   var $numberRating = document.createElement('span');
+    //   var ratingnum = xhr.response.result.rating;
+    //   var num = ratingnum.toFixed(1);
+    //   $numberRating.textContent = num;
+    //   $numberRating.className = 'number-rating';
+    //   $ratingBox.appendChild($numberRating);
+    //   $favoriteItem.appendChild($ratingBox);
 
-      return $favoriteItem;
-    }
+    //   return $favoriteItem;
+    // }
 
   });
   xhr.send();
