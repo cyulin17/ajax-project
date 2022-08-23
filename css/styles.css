@@ -11,7 +11,8 @@ a {
 }
 
 a,
-button {
+button,
+.fa-heart {
   cursor: pointer;
 }
 

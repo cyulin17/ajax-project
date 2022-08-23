@@ -1,5 +1,6 @@
 /* global google */
 var $btn = document.querySelectorAll('.search-button');
+var $logo = document.querySelectorAll('.logo');
 var $lists = document.getElementById('lists');
 var $homePage = document.querySelector('[data-view="home-page"]');
 var $resultPage = document.querySelector('[data-view="result-page"]');
@@ -14,16 +15,32 @@ var $favoriteList = document.getElementById('favorite-list');
 var $favorites = document.querySelector('.favorites');
 var idArray = [];
 
+// add and remove favorites, update localStorage
 const data = JSON.parse(localStorage.getItem('my-list')) || [];
 function update() {
   localStorage.setItem('my-list', JSON.stringify(data));
 }
 
-for (var list = data.length - 1; list >= 0; list--) {
-  var favList = renderFavoriteList(data[list]);
-  $favoriteList.prepend(favList);
+// Handle page
+for (var logo = 0; logo < $logo.length; logo++) {
+  $logo[logo].addEventListener('click', function () {
+    $homePage.className = '';
+    $favoritePage.className = 'hidden';
+    $stores.className = 'hidden';
+    $resultPage.className = 'hidden';
+  });
 }
 
+$favorites.addEventListener('click', function () {
+
+  $favoritePage.className = '';
+  $stores.className = 'hidden';
+  $homePage.className = 'hidden';
+  $resultPage.className = 'hidden';
+
+});
+
+// Search bar
 for (var i = 0; i < $btn.length; i++) {
 
   $btn[i].addEventListener('click', function () {
@@ -146,7 +163,7 @@ for (var i = 0; i < $btn.length; i++) {
     this.previousElementSibling.value = '';
   });
 }
-
+// store information
 $lists.addEventListener('click', function (e) {
 
   while ($storeImage.hasChildNodes()) {
@@ -199,6 +216,7 @@ $lists.addEventListener('click', function (e) {
     }
     $storeImage.append($storeBox);
 
+    // rating
     var $ratingBox = document.createElement('div');
     var $starRating = document.createElement('span');
     $ratingBox.appendChild($starRating);
@@ -298,211 +316,64 @@ $lists.addEventListener('click', function (e) {
       $review.appendChild($content);
       $reviewLists.appendChild($review);
     }
-    // add to favorites
-    $storeImage.addEventListener('click', function (e) {
-
-      if (e.target.tagName !== 'I') {
-        return;
-      }
-
-      var value = event.target.previousElementSibling.textContent;
-
-      if (containObject(data, addToFavorite) === false) {
-        data.unshift(addToFavorite);
-        e.target.className = 'fas fa-heart fa-lg';
-        var favoriteList = renderFavorites(addToFavorite);
-        $favoriteList.prepend(favoriteList);
-        update();
-        // remove from favorites
-      } else if (e.target.className === 'fas fa-heart fa-lg') {
-        for (var num = data.length - 1; num >= 0; num--) {
-          if (data[num].name === value) {
-            data.splice(num, 1);
-            $favoriteList.removeChild($favoriteList.childNodes[num]);
-          }
-        }
-        update();
-        e.target.className = 'far fa-heart fa-lg';
-      }
-    });
-    function renderFavorites(favorite) {
-
-      var $favoriteItem = document.createElement('li');
-
-      var $storeBox = document.createElement('div');
-      var $storeTitle = document.createElement('p');
-      $storeTitle.textContent = xhr.response.result.name;
-      $storeBox.className = 'store-info';
-      $storeTitle.className = 'store_title';
-      $storeBox.appendChild($storeTitle);
-      $favoriteItem.appendChild($storeBox);
-
-      var $heart = document.createElement('i');
-      $heart.className = 'fas fa-heart fa-lg';
-      $storeBox.appendChild($heart);
-      $favoriteItem.append($storeBox);
-
-      var $ratingBox = document.createElement('div');
-      var $starRating = document.createElement('span');
-      $ratingBox.appendChild($starRating);
-      $starRating.className = 'star-rating';
-      $ratingBox.className = 'rating-box';
-
-      var val = (xhr.response.result.rating) * 10;
-      var fullStar = Math.floor(val / 10);
-      var halfStar = val % 10;
-      var emptyStar = 5 - fullStar - 1;
-
-      for (var k = 1; k <= fullStar; k++) {
-        var $fullStar = document.createElement('i');
-        $fullStar.className = 'fas fa-star';
-        $starRating.appendChild($fullStar);
-        $ratingBox.appendChild($starRating);
-      }
-
-      if (halfStar < 5 && fullStar < 5) {
-        var $emptyStar = document.createElement('i');
-        $emptyStar.className = 'far fa-star';
-        $starRating.appendChild($emptyStar);
-        $ratingBox.appendChild($starRating);
-      } else if (halfStar >= 5 && fullStar < 5) {
-        var $halfStar = document.createElement('i');
-        $halfStar.className = 'fas fa-star-half-alt';
-        $starRating.appendChild($halfStar);
-        $ratingBox.appendChild($starRating);
-      }
-
-      for (var m = 1; m <= emptyStar; m++) {
-        var $leftStar = document.createElement('i');
-        $leftStar.className = 'far fa-star';
-        $starRating.appendChild($leftStar);
-        $ratingBox.appendChild($starRating);
-      }
-
-      var $numberRating = document.createElement('span');
-      var ratingnum = xhr.response.result.rating;
-      var num = ratingnum.toFixed(1);
-      $numberRating.textContent = num;
-      $numberRating.className = 'number-rating';
-      $ratingBox.appendChild($numberRating);
-      $favoriteItem.appendChild($ratingBox);
-
-      return $favoriteItem;
-    }
-
-    $storeImage.addEventListener('click', function (e) {
-
-      if (e.target.tagName !== 'I') {
-        return;
-      }
-
-      var value = event.target.previousElementSibling.textContent;
-
-      if (containObject(data, addToFavorite) === false) {
-        data.unshift(addToFavorite);
-        e.target.className = 'fas fa-heart fa-lg';
-        var favoriteList = renderFavorites(addToFavorite);
-        $favoriteList.prepend(favoriteList);
-        update();
-      } else if (e.target.className === 'fas fa-heart fa-lg') {
-        for (var num = data.length - 1; num >= 0; num--) {
-          if (data[num].name === value) {
-            data.splice(num, 1);
-            $favoriteList.removeChild($favoriteList.childNodes[num]);
-          }
-        }
-        update();
-        e.target.className = 'far fa-heart fa-lg';
-      }
-    });
-    renderFavorites();
-    // function renderFavorites(favorite) {
-
-    //   var $favoriteItem = document.createElement('li');
-
-    //   var $storeBox = document.createElement('div');
-    //   var $storeTitle = document.createElement('p');
-    //   $storeTitle.textContent = xhr.response.result.name;
-    //   $storeBox.className = 'store-info';
-    //   $storeTitle.className = 'store_title';
-    //   $storeBox.appendChild($storeTitle);
-    //   $favoriteItem.appendChild($storeBox);
-
-    //   var $heart = document.createElement('i');
-    //   $heart.className = 'fas fa-heart fa-lg';
-    //   $storeBox.appendChild($heart);
-    //   $favoriteItem.append($storeBox);
-
-    //   var $ratingBox = document.createElement('div');
-    //   var $starRating = document.createElement('span');
-    //   $ratingBox.appendChild($starRating);
-    //   $starRating.className = 'star-rating';
-    //   $ratingBox.className = 'rating-box';
-
-    //   var val = (xhr.response.result.rating) * 10;
-    //   var fullStar = Math.floor(val / 10);
-    //   var halfStar = val % 10;
-    //   var emptyStar = 5 - fullStar - 1;
-
-    //   for (var k = 1; k <= fullStar; k++) {
-    //     var $fullStar = document.createElement('i');
-    //     $fullStar.className = 'fas fa-star';
-    //     $starRating.appendChild($fullStar);
-    //     $ratingBox.appendChild($starRating);
-    //   }
-
-    //   if (halfStar < 5 && fullStar < 5) {
-    //     var $emptyStar = document.createElement('i');
-    //     $emptyStar.className = 'far fa-star';
-    //     $starRating.appendChild($emptyStar);
-    //     $ratingBox.appendChild($starRating);
-    //   } else if (halfStar >= 5 && fullStar < 5) {
-    //     var $halfStar = document.createElement('i');
-    //     $halfStar.className = 'fas fa-star-half-alt';
-    //     $starRating.appendChild($halfStar);
-    //     $ratingBox.appendChild($starRating);
-    //   }
-
-    //   for (var m = 1; m <= emptyStar; m++) {
-    //     var $leftStar = document.createElement('i');
-    //     $leftStar.className = 'far fa-star';
-    //     $starRating.appendChild($leftStar);
-    //     $ratingBox.appendChild($starRating);
-    //   }
-
-    //   var $numberRating = document.createElement('span');
-    //   var ratingnum = xhr.response.result.rating;
-    //   var num = ratingnum.toFixed(1);
-    //   $numberRating.textContent = num;
-    //   $numberRating.className = 'number-rating';
-    //   $ratingBox.appendChild($numberRating);
-    //   $favoriteItem.appendChild($ratingBox);
-
-    //   return $favoriteItem;
-    // }
-
   });
   xhr.send();
-
 });
 
-$favorites.addEventListener('click', function () {
+// add to favorites
+$storeImage.addEventListener('click', function (e) {
 
-  $favoritePage.className = '';
-  $stores.className = 'hidden';
-  $homePage.className = 'hidden';
-  $resultPage.className = 'hidden';
+  if (e.target.tagName !== 'I') {
+    return;
+  }
 
+  var rating = document.querySelector('.number-rating').innerHTML;
+  var value = event.target.previousElementSibling.textContent;
+
+  var addToFavorite = {
+    name: value,
+    rating: rating
+  };
+
+  if (containObject(data, addToFavorite) === false && e.target.className === 'far fa-heart fa-lg') {
+    data.unshift(addToFavorite);
+    e.target.className = 'fas fa-heart fa-lg';
+    var favoriteList = renderFavoriteList(addToFavorite);
+    $favoriteList.prepend(favoriteList);
+    update();
+    // remove from favorites
+  } else if (containObject(data, addToFavorite) === true && e.target.className === 'fas fa-heart fa-lg') {
+    for (var num = data.length - 1; num >= 0; num--) {
+      if (data[num].name === value) {
+        data.splice(num, 1);
+        $favoriteList.removeChild($favoriteList.childNodes[num]);
+      }
+    }
+    e.target.className = 'far fa-heart fa-lg';
+    update();
+  }
 });
 
-function containObject(array, obj) {
+// Remove favorites in the favorites page
+$favoriteList.addEventListener('click', function (e) {
+  if (e.target.tagName !== 'I') {
+    return;
+  }
 
-  for (var i = array.length - 1; i >= 0; i--) {
-    if (array[i].name === obj.name) {
-      return true;
+  var value = event.target.previousElementSibling.textContent;
+
+  for (var num = data.length - 1; num >= 0; num--) {
+    if (data[num].name === value) {
+      data.splice(num, 1);
+      $favoriteList.removeChild($favoriteList.childNodes[num]);
     }
   }
-  return false;
+  update();
+});
+// Favorites Page
+for (var list = data.length - 1; list >= 0; list--) {
+  var favList = renderFavoriteList(data[list]);
+  $favoriteList.prepend(favList);
 }
 
 function renderFavoriteList(favorite) {
@@ -511,7 +382,7 @@ function renderFavoriteList(favorite) {
 
   var $storeBox = document.createElement('div');
   var $storeTitle = document.createElement('p');
-  $storeTitle.textContent = data[list].name;
+  $storeTitle.textContent = favorite.name;
   $storeBox.className = 'store-info';
   $storeTitle.className = 'store_title';
   $storeBox.appendChild($storeTitle);
@@ -528,7 +399,7 @@ function renderFavoriteList(favorite) {
   $starRating.className = 'star-rating';
   $ratingBox.className = 'rating-box';
 
-  var val = (data[list].rating) * 10;
+  var val = (favorite.rating) * 10;
   var fullStar = Math.floor(val / 10);
   var halfStar = val % 10;
   var emptyStar = 5 - fullStar - 1;
@@ -560,12 +431,22 @@ function renderFavoriteList(favorite) {
   }
 
   var $numberRating = document.createElement('span');
-  var ratingnum = data[list].rating;
-  var num = ratingnum.toFixed(1);
+  var ratingnum = favorite.rating;
+  var num = ratingnum;
   $numberRating.textContent = num;
   $numberRating.className = 'number-rating';
   $ratingBox.appendChild($numberRating);
   $favoriteItem.appendChild($ratingBox);
 
   return $favoriteItem;
+}
+
+function containObject(array, obj) {
+
+  for (var i = array.length - 1; i >= 0; i--) {
+    if (array[i].name === obj.name) {
+      return true;
+    }
+  }
+  return false;
 }
