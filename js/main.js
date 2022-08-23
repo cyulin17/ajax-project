@@ -328,10 +328,10 @@ $storeImage.addEventListener('click', function (e) {
   }
 
   var rating = document.querySelector('.number-rating').innerHTML;
-  var value = event.target.previousElementSibling.textContent;
+  var storeName = event.target.previousElementSibling.textContent;
 
   var addToFavorite = {
-    name: value,
+    name: storeName,
     rating: rating
   };
 
@@ -344,7 +344,7 @@ $storeImage.addEventListener('click', function (e) {
     // remove from favorites
   } else if (containObject(data, addToFavorite) === true && e.target.className === 'fas fa-heart fa-lg') {
     for (var num = data.length - 1; num >= 0; num--) {
-      if (data[num].name === value) {
+      if (data[num].name === storeName) {
         data.splice(num, 1);
         $favoriteList.removeChild($favoriteList.childNodes[num]);
       }
@@ -370,6 +370,7 @@ $favoriteList.addEventListener('click', function (e) {
   }
   update();
 });
+
 // Favorites Page
 for (var list = data.length - 1; list >= 0; list--) {
   var favList = renderFavoriteList(data[list]);
