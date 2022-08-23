@@ -54,7 +54,7 @@ for (var i = 0; i < $btn.length; i++) {
 
     var zipcode = this.previousElementSibling.value;
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/textsearch/json%3Fquery=boba+in+' + zipcode + '%26key=MYKEY');
+    xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/textsearch/json%3Fquery=boba+in+' + zipcode + '%26key=AIzaSyCjh9dISRd6EmdVMLlRuPB1xz9RV1_UPDM');
     xhr.responseType = 'json';
     xhr.addEventListener('load', function () {
       function initMap() {
@@ -190,7 +190,7 @@ $lists.addEventListener('click', function (e) {
   var placeId = idArray[id];
 
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/details/json?place_id=' + placeId + '%26key=MYKEY');
+  xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/details/json?place_id=' + placeId + '%26key=AIzaSyCjh9dISRd6EmdVMLlRuPB1xz9RV1_UPDM');
   xhr.responseType = 'json';
   xhr.addEventListener('load', function () {
     // store-header
@@ -268,7 +268,7 @@ $lists.addEventListener('click', function (e) {
       var $photoItem = document.createElement('li');
       var $storePhoto = document.createElement('img');
       $storePhoto.className = 'photo-item';
-      $storePhoto.setAttribute('src', 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=250&photo_reference=' + xhr.response.result.photos[n].photo_reference + '&key=MYKEY');
+      $storePhoto.setAttribute('src', 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=250&photo_reference=' + xhr.response.result.photos[n].photo_reference + '&key=AIzaSyCjh9dISRd6EmdVMLlRuPB1xz9RV1_UPDM');
       $photoItem.appendChild($storePhoto);
       $photos.appendChild($photoItem);
     }
@@ -328,10 +328,10 @@ $storeImage.addEventListener('click', function (e) {
   }
 
   var rating = document.querySelector('.number-rating').innerHTML;
-  var value = event.target.previousElementSibling.textContent;
+  var storeName = event.target.previousElementSibling.textContent;
 
   var addToFavorite = {
-    name: value,
+    name: storeName,
     rating: rating
   };
 
@@ -344,7 +344,7 @@ $storeImage.addEventListener('click', function (e) {
     // remove from favorites
   } else if (containObject(data, addToFavorite) === true && e.target.className === 'fas fa-heart fa-lg') {
     for (var num = data.length - 1; num >= 0; num--) {
-      if (data[num].name === value) {
+      if (data[num].name === storeName) {
         data.splice(num, 1);
         $favoriteList.removeChild($favoriteList.childNodes[num]);
       }
@@ -370,6 +370,7 @@ $favoriteList.addEventListener('click', function (e) {
   }
   update();
 });
+
 // Favorites Page
 for (var list = data.length - 1; list >= 0; list--) {
   var favList = renderFavoriteList(data[list]);
