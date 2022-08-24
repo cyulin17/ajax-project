@@ -30,15 +30,13 @@ https://cyulin17.github.io/boba-finder/
 - Users can sort the results based on rating.
 - Users can filter the results based on rating.
 
+## Getting Started
 
+1. Clone the repository.
+   ```shell
+    git clone git@github.com:cyulin17/go-to-japan.git
+    cd go-to-japan
+   ```
 
-
-
-
-
-
-
-
-
-
-
+2. Open `index.html` with your preferred browser.
+   
