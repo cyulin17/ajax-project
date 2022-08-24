@@ -1,3 +1,44 @@
-# ajax-project
+# Boba-finder
 
-A dynamic HTML, CSS, and JavaScript solo project.
+A front-end web application for boba tea enthusiasts who want to find boba tea shops.
+
+## Live Demo
+
+https://cyulin17.github.io/boba-finder/
+
+![alt text]()
+
+![alt text]()
+
+## Technologies Used
+
+- HTML5
+- CSS
+- JavaScript
+- [Google Map API](https://developers.google.com/maps/documentation)
+
+## Features
+
+- Users can search for boba tea shops by zip code.
+- Users can view the information about the shops.
+- Users can add boba tea shops to their favorite list.
+- Users can remove boba tea shops from their favorite list.
+- Users can view their favorite list.
+
+## Stretch Features
+
+- Users can sort the results based on rating.
+- Users can filter the results based on rating.
+
+
+
+
+
+
+
+
+
+
+
+
+
