@@ -259,7 +259,7 @@ $lists.addEventListener('click', function (e) {
     var ratingnum = xhr.response.result.rating;
     var num = ratingnum.toFixed(1);
     $numberRating.textContent = num;
-    $numberRating.className = 'number-rating';
+    $numberRating.className = 'rating';
     $ratingBox.appendChild($numberRating);
     $storeImage.appendChild($ratingBox);
 
@@ -327,9 +327,8 @@ $storeImage.addEventListener('click', function (e) {
     return;
   }
 
-  var rating = document.querySelector('.number-rating').innerHTML;
+  var rating = document.querySelector('.rating').textContent;
   var storeName = event.target.previousElementSibling.textContent;
-
   var addToFavorite = {
     name: storeName,
     rating: rating
