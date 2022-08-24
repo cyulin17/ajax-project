@@ -188,7 +188,8 @@ input:focus {
   color: #ff9e00;
 }
 
-.number-rating {
+.number-rating,
+.rating {
   color: #f00;
   font-weight: 900;
   font-size: 1vw;
