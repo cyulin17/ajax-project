@@ -1,4 +1,4 @@
-# Boba-finder
+# Boba-Finder
 
 A front-end web application for boba tea enthusiasts who want to find boba tea shops.
 
@@ -6,9 +6,9 @@ A front-end web application for boba tea enthusiasts who want to find boba tea s
 
 https://cyulin17.github.io/boba-finder/
 
-![alt text]()
+![alt text](https://github.com/cyulin17/boba-finder/blob/master/images/boba-finder1.gif)
 
-![alt text]()
+![alt text](https://github.com/cyulin17/boba-finder/blob/master/images/boba-finder2.gif)
 
 ## Technologies Used
 
@@ -34,8 +34,8 @@ https://cyulin17.github.io/boba-finder/
 
 1. Clone the repository.
    ```shell
-    git clone git@github.com:cyulin17/go-to-japan.git
-    cd go-to-japan
+    git clone git@github.com:cyulin17/boba-finder.git
+    cd boba-finder
    ```
 
 2. Open `index.html` with your preferred browser.
