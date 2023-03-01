@@ -184,12 +184,12 @@ input:focus {
 }
 
 .fa-star,
+.fa-star-half-stroke,
 .fa-star-half-alt {
   color: #ff9e00;
 }
 
-.number-rating,
-.rating {
+.number-rating {
   color: #f00;
   font-weight: 900;
   font-size: 1vw;

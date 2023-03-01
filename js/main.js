@@ -96,61 +96,7 @@ for (var i = 0; i < $btn.length; i++) {
 
         idArray.push(xhr.response.results[i].place_id);
 
-        var $li = document.createElement('li');
-        var $a = document.createElement('a');
-        $li.className = 'result-item';
-        $li.setAttribute('id', i);
-        $li.appendChild($a);
-        $lists.appendChild($li);
-
-        var $storeName = document.createElement('h3');
-        $storeName.textContent = xhr.response.results[i].name;
-        $a.appendChild($storeName);
-
-        var $address = document.createElement('p');
-        $address.textContent = xhr.response.results[i].formatted_address;
-        $a.appendChild($address);
-
-        var $starRating = document.createElement('span');
-        $starRating.className = 'star-rating';
-
-        var val = (xhr.response.results[i].rating) * 10;
-        var fullStar = Math.floor(val / 10);
-        var halfStar = val % 10;
-        var emptyStar = 5 - fullStar - 1;
-
-        for (var k = 1; k <= fullStar; k++) {
-          var $fullStar = document.createElement('i');
-          $fullStar.className = 'fas fa-star';
-          $starRating.appendChild($fullStar);
-          $a.appendChild($starRating);
-        }
-
-        if (halfStar < 5 && fullStar < 5) {
-          var $emptyStar = document.createElement('i');
-          $emptyStar.className = 'far fa-star';
-          $starRating.appendChild($emptyStar);
-          $a.appendChild($starRating);
-        } else if (halfStar >= 5 && fullStar < 5) {
-          var $halfStar = document.createElement('i');
-          $halfStar.className = 'fas fa-star-half-alt';
-          $starRating.appendChild($halfStar);
-          $a.appendChild($starRating);
-        }
-
-        for (var m = 1; m <= emptyStar; m++) {
-          var $leftStar = document.createElement('i');
-          $leftStar.className = 'far fa-star';
-          $starRating.appendChild($leftStar);
-          $a.appendChild($starRating);
-        }
-
-        var $numberRating = document.createElement('span');
-        var ratingnum = xhr.response.results[i].rating;
-        var num = ratingnum.toFixed(1);
-        $numberRating.textContent = num;
-        $numberRating.className = 'number-rating';
-        $a.appendChild($numberRating);
+        renderResults(xhr.response.results[i].name, xhr.response.results[i].formatted_address, xhr.response.results[i].rating);
 
       }
 
@@ -449,4 +395,49 @@ function containObject(array, obj) {
     }
   }
   return false;
+}
+
+function renderResults(store, address, value) {
+  const $li = document.createElement('li');
+  const $a = document.createElement('a');
+  $li.className = 'result-item';
+  $li.setAttribute('id', i);
+  $li.appendChild($a);
+  $lists.appendChild($li);
+
+  const $storeName = document.createElement('h3');
+  $storeName.textContent = store;
+  $a.appendChild($storeName);
+
+  const $address = document.createElement('p');
+  $address.textContent = address;
+  $a.appendChild($address);
+
+  const $starRating = document.createElement('span');
+  $starRating.className = 'star-rating';
+  $a.appendChild($starRating);
+
+  const fullStar = Math.floor(value);
+  const halfStar = value * 10 % 10;
+
+  for (let i = 1; i <= 5; i++) {
+    const $fStar = document.createElement('i');
+    $fStar.className = 'fa-regular fa-star';
+    $starRating.appendChild($fStar);
+  }
+  for (let j = 0; j < fullStar; j++) {
+    $starRating.children[j].className = 'fa-solid fa-star';
+    if (halfStar > 4 && halfStar <= 9) {
+      $starRating.children[fullStar].className = 'fa-solid fa-star-half-stroke';
+    }
+  }
+
+  const $numberRating = document.createElement('span');
+  const num = value.toFixed(1);
+  $numberRating.textContent = num;
+  $numberRating.className = 'number-rating';
+  $a.appendChild($numberRating);
+
+  return $li;
+
 }
