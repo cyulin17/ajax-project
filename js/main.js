@@ -6,7 +6,8 @@ var $homePage = document.querySelector('[data-view="home-page"]');
 var $resultPage = document.querySelector('[data-view="result-page"]');
 var $stores = document.querySelector('[data-view="stores"]');
 var $favoritePage = document.querySelector('[data-view="favorites-page"]');
-var $storeImage = document.getElementById('store-image');
+// var $storeImage = document.getElementById('store-image');
+var $storeHeader = document.querySelector('.store-header');
 var $photos = document.getElementById('photos');
 var $hours = document.getElementById('hours');
 var $location = document.getElementById('location');
@@ -95,9 +96,7 @@ for (var i = 0; i < $btn.length; i++) {
       for (var i = 0; i < xhr.response.results.length; i++) {
 
         idArray.push(xhr.response.results[i].place_id);
-
-        renderResults(xhr.response.results[i].name, xhr.response.results[i].formatted_address, xhr.response.results[i].rating);
-
+        renderResults(xhr.response.results[i].name, xhr.response.results[i].formatted_address, xhr.response.results[i].rating, i);
       }
 
     });
@@ -112,8 +111,8 @@ for (var i = 0; i < $btn.length; i++) {
 // store information
 $lists.addEventListener('click', function (e) {
 
-  while ($storeImage.hasChildNodes()) {
-    $storeImage.removeChild($storeImage.firstChild);
+  while ($storeHeader.hasChildNodes()) {
+    $storeHeader.removeChild($storeHeader.firstChild);
   }
   while ($hours.hasChildNodes()) {
     $hours.removeChild($hours.firstChild);
@@ -139,75 +138,8 @@ $lists.addEventListener('click', function (e) {
   xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/details/json?place_id=' + placeId + '%26key=AIzaSyBN7ub3XQK_C2cDMilDHrT3yy02o3kYtAY');
   xhr.responseType = 'json';
   xhr.addEventListener('load', function () {
-    // store-header
-    var $storeBox = document.createElement('div');
-    var $storeTitle = document.createElement('h1');
-    $storeTitle.textContent = xhr.response.result.name;
-    $storeBox.className = 'store-info';
-    $storeTitle.className = 'store_title';
-    $storeBox.appendChild($storeTitle);
-    $storeImage.appendChild($storeBox);
 
-    var addToFavorite = {
-      name: xhr.response.result.name,
-      rating: xhr.response.result.rating
-    };
-
-    var $heart = document.createElement('i');
-    $storeBox.appendChild($heart);
-    if (containObject(data, addToFavorite)) {
-      $heart.className = 'fas fa-heart fa-lg';
-    } else {
-      $heart.className = 'far fa-heart fa-lg';
-    }
-    $storeImage.append($storeBox);
-
-    // rating
-    var $ratingBox = document.createElement('div');
-    var $starRating = document.createElement('span');
-    $ratingBox.appendChild($starRating);
-    $starRating.className = 'star-rating';
-    $ratingBox.className = 'rating-box';
-
-    var val = (xhr.response.result.rating) * 10;
-    var fullStar = Math.floor(val / 10);
-    var halfStar = val % 10;
-    var emptyStar = 5 - fullStar - 1;
-
-    for (var k = 1; k <= fullStar; k++) {
-      var $fullStar = document.createElement('i');
-      $fullStar.className = 'fas fa-star';
-      $starRating.appendChild($fullStar);
-      $ratingBox.appendChild($starRating);
-
-    }
-
-    if (halfStar < 5 && fullStar < 5) {
-      var $emptyStar = document.createElement('i');
-      $emptyStar.className = 'far fa-star';
-      $starRating.appendChild($emptyStar);
-      $ratingBox.appendChild($starRating);
-    } else if (halfStar >= 5 && fullStar < 5) {
-      var $halfStar = document.createElement('i');
-      $halfStar.className = 'fas fa-star-half-alt';
-      $starRating.appendChild($halfStar);
-      $ratingBox.appendChild($starRating);
-    }
-
-    for (var m = 1; m <= emptyStar; m++) {
-      var $leftStar = document.createElement('i');
-      $leftStar.className = 'far fa-star';
-      $starRating.appendChild($leftStar);
-      $ratingBox.appendChild($starRating);
-    }
-
-    var $numberRating = document.createElement('span');
-    var ratingnum = xhr.response.result.rating;
-    var num = ratingnum.toFixed(1);
-    $numberRating.textContent = num;
-    $numberRating.className = 'rating';
-    $ratingBox.appendChild($numberRating);
-    $storeImage.appendChild($ratingBox);
+    renderHeader(xhr.response.result.name, xhr.response.result.rating);
 
     // photos
     for (var n = 0; n < xhr.response.result.photos.length; n++) {
@@ -267,14 +199,15 @@ $lists.addEventListener('click', function (e) {
 });
 
 // add to favorites
-$storeImage.addEventListener('click', function (e) {
+$storeHeader.addEventListener('click', function (e) {
 
   if (e.target.tagName !== 'I') {
     return;
   }
 
-  var rating = document.querySelector('.rating').textContent;
+  var rating = document.querySelector('.number-rating').textContent;
   var storeName = event.target.previousElementSibling.textContent;
+
   var addToFavorite = {
     name: storeName,
     rating: rating
@@ -283,7 +216,7 @@ $storeImage.addEventListener('click', function (e) {
   if (containObject(data, addToFavorite) === false && e.target.className === 'far fa-heart fa-lg') {
     data.unshift(addToFavorite);
     e.target.className = 'fas fa-heart fa-lg';
-    var favoriteList = renderFavoriteList(addToFavorite);
+    var favoriteList = renderHeader(addToFavorite.name, addToFavorite.rating);
     $favoriteList.prepend(favoriteList);
     update();
     // remove from favorites
@@ -318,73 +251,8 @@ $favoriteList.addEventListener('click', function (e) {
 
 // Favorites Page
 for (var list = data.length - 1; list >= 0; list--) {
-  var favList = renderFavoriteList(data[list]);
+  var favList = renderHeader(data[list].name, data[list].rating);
   $favoriteList.prepend(favList);
-}
-
-function renderFavoriteList(favorite) {
-
-  var $favoriteItem = document.createElement('li');
-
-  var $storeBox = document.createElement('div');
-  var $storeTitle = document.createElement('p');
-  $storeTitle.textContent = favorite.name;
-  $storeBox.className = 'store-info';
-  $storeTitle.className = 'store_title';
-  $storeBox.appendChild($storeTitle);
-  $favoriteItem.appendChild($storeBox);
-
-  var $heart = document.createElement('i');
-  $heart.className = 'fas fa-heart fa-lg';
-  $storeBox.appendChild($heart);
-  $favoriteItem.append($storeBox);
-
-  var $ratingBox = document.createElement('div');
-  var $starRating = document.createElement('span');
-  $ratingBox.appendChild($starRating);
-  $starRating.className = 'star-rating';
-  $ratingBox.className = 'rating-box';
-
-  var val = (favorite.rating) * 10;
-  var fullStar = Math.floor(val / 10);
-  var halfStar = val % 10;
-  var emptyStar = 5 - fullStar - 1;
-
-  for (var k = 1; k <= fullStar; k++) {
-    var $fullStar = document.createElement('i');
-    $fullStar.className = 'fas fa-star';
-    $starRating.appendChild($fullStar);
-    $ratingBox.appendChild($starRating);
-  }
-
-  if (halfStar < 5 && fullStar < 5) {
-    var $emptyStar = document.createElement('i');
-    $emptyStar.className = 'far fa-star';
-    $starRating.appendChild($emptyStar);
-    $ratingBox.appendChild($starRating);
-  } else if (halfStar >= 5 && fullStar < 5) {
-    var $halfStar = document.createElement('i');
-    $halfStar.className = 'fas fa-star-half-alt';
-    $starRating.appendChild($halfStar);
-    $ratingBox.appendChild($starRating);
-  }
-
-  for (var m = 1; m <= emptyStar; m++) {
-    var $leftStar = document.createElement('i');
-    $leftStar.className = 'far fa-star';
-    $starRating.appendChild($leftStar);
-    $ratingBox.appendChild($starRating);
-  }
-
-  var $numberRating = document.createElement('span');
-  var ratingnum = favorite.rating;
-  var num = ratingnum;
-  $numberRating.textContent = num;
-  $numberRating.className = 'number-rating';
-  $ratingBox.appendChild($numberRating);
-  $favoriteItem.appendChild($ratingBox);
-
-  return $favoriteItem;
 }
 
 function containObject(array, obj) {
@@ -397,7 +265,7 @@ function containObject(array, obj) {
   return false;
 }
 
-function renderResults(store, address, value) {
+function renderResults(store, address, value, i) {
   const $li = document.createElement('li');
   const $a = document.createElement('a');
   $li.className = 'result-item';
@@ -440,4 +308,65 @@ function renderResults(store, address, value) {
 
   return $li;
 
+}
+
+function renderHeader(storeName, value) {
+
+  const $storeImage = document.createElement('div');
+
+  const $storeBox = document.createElement('div');
+  const $storeTitle = document.createElement('h1');
+  $storeTitle.textContent = storeName;
+  $storeBox.className = 'store-info';
+  $storeTitle.className = 'store_title';
+  $storeBox.appendChild($storeTitle);
+  $storeImage.appendChild($storeBox);
+  $storeHeader.appendChild($storeImage);
+
+  var addToFavorite = {
+    name: storeName,
+    rating: value
+  };
+
+  var $heart = document.createElement('i');
+  $storeBox.appendChild($heart);
+  if (containObject(data, addToFavorite)) {
+    $heart.className = 'fas fa-heart fa-lg';
+  } else {
+    $heart.className = 'far fa-heart fa-lg';
+  }
+  $storeImage.append($storeBox);
+
+  const $ratingBox = document.createElement('div');
+  const $starRating = document.createElement('span');
+  $ratingBox.appendChild($starRating);
+  $starRating.className = 'star-rating';
+  $ratingBox.className = 'rating-box';
+  $storeImage.appendChild($ratingBox);
+
+  const fullStar = Math.floor(value);
+  const halfStar = value * 10 % 10;
+
+  for (let i = 1; i <= 5; i++) {
+    const $fStar = document.createElement('i');
+    $fStar.className = 'fa-regular fa-star';
+    $starRating.appendChild($fStar);
+  }
+  for (let j = 0; j < fullStar; j++) {
+    $starRating.children[j].className = 'fa-solid fa-star';
+    if (halfStar > 4 && halfStar <= 9) {
+      $starRating.children[fullStar].className = 'fa-solid fa-star-half-stroke';
+    }
+  }
+
+  const $numberRating = document.createElement('span');
+  if (typeof value === 'number') {
+    const num = value.toFixed(1);
+    $numberRating.textContent = num;
+  }
+  $numberRating.className = 'number-rating';
+  $ratingBox.appendChild($numberRating);
+  $storeImage.appendChild($ratingBox);
+
+  return $storeImage;
 }
