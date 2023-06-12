@@ -11,7 +11,8 @@
 
   <title>Boba Finder</title>
   <link rel="icon" href="images/favicon.ico">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> -->
+  <script src="https://kit.fontawesome.com/fe5279fe89.js" crossorigin="anonymous"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600;700;800;900&family=Varela+Round&display=swap"
@@ -22,123 +23,110 @@
 </head>
 
 <body>
-  <!-- navigation -->
+<div class="wrapper">
   <header>
-    <div class="row">
-      <div class="nav">
+      <nav>
         <a href="#" class="logo">BobaFinder</a>
         <a href="#" class="favorites">Favorites</a>
-      </div>
-    </div>
+      </nav>
   </header>
-
+</div>
   <main>
-    <!-- Home -->
-    <div data-view="home-page">
-      <div class="row">
-        <div class="image">
-          <div class="text">
-            <label for="search">Grab a Boba Tea Near You</label>
-          </div>
-          <div class="search-home">
-            <input type="text" name="search" placeholder="Enter a Zipcode" /><button class="search-button"><i
-                class="fas fa-search"></i></button>
+
+      <div class="row home" data-view="home-page">
+        <div><img src="/images/boba-finder-meta-image.jpg" alt="bobatea"></div>
+        <div>
+          <p class="text">Grab a Boba Tea Near You</p>
+          <div class="search-bar">
+            <input type="text" name="search" placeholder="Enter a Zipcode" />
+            <button class="search"><i class="fas fa-search search-icon"></i></button>
           </div>
         </div>
       </div>
-    </div>
-    <!-- search result -->
+
+<!-- Result Page -->
     <div class="hidden" data-view="result-page">
-      <div class="container">
-      <div class="row">
-        <div class="search-bar"><input type="text" name="search" placeholder="Enter a Zipcode" /><button
-            class="search-button"><i class="fas fa-search"></i></button>
+      <div class="search-container">
+        <div class="search-bar">
+          <input type="text" name="search" placeholder="Enter a Zipcode" />
+          <button class="search"><i class="fas fa-search search-icon"></i></button>
         </div>
       </div>
-
       <div class="row">
-        <div class="search-result">
-          <div id="map" class="two-third-column"></div>
-          <div class="one-third-column">
-            <ul id="lists">
-            </ul>
-          </div>
+        <div id="map"></div>
+          <ul id="lists">
+          </ul>
         </div>
-      </div>
-      </div>
     </div>
 
-    <!-- Store information page-->
-    <div class="hidden" data-view="stores">
-      <div class="container">
-      <div class="row">
-        <div class="search-bar"><input type="text" name="search" placeholder="Enter a Zipcode" /><button
-            class="search-button"><i class="fas fa-search"></i></button>
+<!-- Store Information Page-->
+  <div class="hidden" data-view="stores">
+
+      <div class="search-container">
+        <div class="search-bar">
+          <input type="text" name="search" placeholder="Enter a Zipcode" />
+          <button class="search"><i class="fas fa-search search-icon"></i></button>
         </div>
       </div>
-      </div>
 
-      <div class="container">
-        <div class="row">
-          <div class="store-header">
-            <div id="store-image" class="info-box">
+      <div class="wrapper container">
+
+        <div class="store-header">
+          <div id="store-image" class="info-box">
             </div>
           </div>
-        </div>
 
-        <div class="row">
           <div class="photo-container">
             <ul id="photos" class="photo-box"></ul>
           </div>
-        </div>
 
-        <div class="row">
           <div class="location-hours">
             <div id="hours" class="half-column opening-hours">
             </div>
-            <div id="location" class="half-column address-phone">
+            <div id="address" class="half-column address-phone">
             </div>
           </div>
-        </div>
 
-        <div class="row">
           <div class="review">
-            <h3>Reviews</h3>
             <ul id="review-lists"></ul>
           </div>
+
         </div>
+  </div>
+
+<!-- My favorites 2.0 -->
+  <div class="hidden" data-view="favorites-page">
+
+      <div class="search-container">
+        <div class="search-bar">
+          <input type="text" name="search" placeholder="Enter a Zipcode" />
+          <button class="search"><i class="fas fa-search search-icon"></i></button>
         </div>
       </div>
 
-    <!-- My favorites -->
-    <div class="hidden" data-view="favorites-page">
-      <div class="container">
-      <div class="row">
-        <div class="search-bar"><input type="text" name="search" placeholder="Enter a Zipcode" /><button
-            class="search-button"><i class="fas fa-search"></i></button>
-        </div>
-      </div>
-    </div>
+          <div class="wrapper container">
+              <div class="favorite-header">
+                <h2>Favorites</h2>
+              </div>
 
-      <div class="container">
-        <div class="row">
-          <div class="favorite-header">
-            <h2>Favorites</h2>
+            <div>
+              <ul id="favorite-list"></ul>
+            </div>
+
           </div>
+  </div>
 
-        <div class="row">
-          <ul id="favorite-list"></ul>
-        </div>
-      </div>
-    </div>
-    </div>
-  </main>
+<!-- footer -->
+  <footer>
+    <p>Chia Yu Lin 2023 </p>
+  </footer>
+</main>
 
 
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
   <script async
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN7ub3XQK_C2cDMilDHrT3yy02o3kYtAY&libraries=places&callback=initMap"></script>
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYNjwc3_3oj7HchcYbacmPYqsTXHyKOSc&libraries=places&callback=initMap"></script>
 </body>
 
 </html>
