@@ -8,6 +8,13 @@
 }
 
 @media only screen and (min-width: 768px) {
+  .hero-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
   .row {
     grid-template-columns: 3fr 1fr;
   }
@@ -34,10 +41,6 @@
   .home-search-container {
     min-width: 600px;
   }
-
-  /* p.text {
-    font-size: 28px;
-  } */
 
   .photo-container {
     display: flex;
