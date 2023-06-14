@@ -1,452 +1,398 @@
 /* global google */
-var $btn = document.querySelectorAll('.search-button');
-var $logo = document.querySelectorAll('.logo');
-var $lists = document.getElementById('lists');
-var $homePage = document.querySelector('[data-view="home-page"]');
-var $resultPage = document.querySelector('[data-view="result-page"]');
-var $stores = document.querySelector('[data-view="stores"]');
-var $favoritePage = document.querySelector('[data-view="favorites-page"]');
-var $storeImage = document.getElementById('store-image');
-var $photos = document.getElementById('photos');
-var $hours = document.getElementById('hours');
-var $location = document.getElementById('location');
-var $reviewLists = document.getElementById('review-lists');
-var $favoriteList = document.getElementById('favorite-list');
-var $favorites = document.querySelector('.favorites');
-var idArray = [];
+const searchBtn = document.querySelectorAll('.search');
+const logo = document.querySelector('.logo');
+const homePage = document.querySelector('[data-view="home-page"]');
+const resultPage = document.querySelector('[data-view="result-page"]');
+const stores = document.querySelector('[data-view="stores"]');
+const favoritePage = document.querySelector('[data-view="favorites-page"]');
+const lists = document.getElementById('lists');
+const storeImage = document.getElementById('store-image');
+const photo = document.getElementById('photos');
+const hours = document.getElementById('hours');
+const address = document.getElementById('address');
+const reviewLists = document.getElementById('review-lists');
+const favoriteLists = document.getElementById('favorite-list');
+const favorites = document.querySelector('.favorites');
+const key = 'AIzaSyCYNjwc3_3oj7HchcYbacmPYqsTXHyKOSc';
+let idArray = [];
 
-// add and remove favorites, update localStorage
-const data = JSON.parse(localStorage.getItem('my-list')) || [];
-function update() {
-  localStorage.setItem('my-list', JSON.stringify(data));
+// Handle Page
+logo.addEventListener('click', backToHome);
+favorites.addEventListener('click', goToFavorite);
+
+// Create a function to handle the API request and data processing
+async function fetchData(zipcode) {
+
+  const response = await fetch(`https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/textsearch/json%3Fquery=boba+in+${zipcode}%26key=${key}`);
+
+  if (!response.ok) {
+    throw new Error('Error: ' + response.status);
+  }
+
+  const data = await response.json();
+  return data;
 }
 
-// Handle page
-for (var logo = 0; logo < $logo.length; logo++) {
-  $logo[logo].addEventListener('click', function () {
-    $homePage.className = '';
-    $favoritePage.className = 'hidden';
-    $stores.className = 'hidden';
-    $resultPage.className = 'hidden';
+// Create a function to process and display the data
+function searchResults(data) {
+  // Process the data and perform necessary operations
+  for (let i = 0; i < data.results.length; i++) {
+
+    idArray.push(data.results[i].place_id);
+
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    li.className = 'result-item';
+    li.setAttribute('id', i);
+    li.appendChild(a);
+    lists.appendChild(li);
+
+    const storeName = document.createElement('h3');
+    storeName.textContent = data.results[i].name;
+    a.appendChild(storeName);
+
+    const address = document.createElement('p');
+    address.textContent = data.results[i].formatted_address;
+    a.appendChild(address);
+
+    const starRating = createStarRating(data.results[i].rating);
+    a.appendChild(starRating);
+
+    const numberRating = createNumberRating(data.results[i].rating);
+    a.appendChild(numberRating);
+
+  }
+
+  initMap(data);
+
+}
+
+// display map
+const initMap = data => {
+  this.map = new google.maps.Map(document.getElementById('map'), {
+    center: {
+      lat: data.results[0].geometry.location.lat,
+      lng: data.results[0].geometry.location.lng
+    },
+    zoom: 15
   });
-}
 
-$favorites.addEventListener('click', function () {
-
-  $favoritePage.className = '';
-  $stores.className = 'hidden';
-  $homePage.className = 'hidden';
-  $resultPage.className = 'hidden';
-
-});
-
-// Search bar
-for (var i = 0; i < $btn.length; i++) {
-
-  $btn[i].addEventListener('click', function () {
-    if (idArray.length > 0) {
-      idArray = [];
-    }
-
-    while ($lists.hasChildNodes()) {
-      $lists.removeChild($lists.firstChild);
-    }
-
-    var zipcode = this.previousElementSibling.value;
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/textsearch/json%3Fquery=boba+in+' + zipcode + '%26key=AIzaSyBN7ub3XQK_C2cDMilDHrT3yy02o3kYtAY');
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', function () {
-      function initMap() {
-        this.map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: xhr.response.results[0].geometry.location.lat, lng: xhr.response.results[0].geometry.location.lng },
-          zoom: 15
-        });
-
-        for (var j = 0; j < xhr.response.results.length; j++) {
-          const marker = new google.maps.Marker({
-            position: xhr.response.results[j].geometry.location,
-            map: this.map
-          });
-
-          const contentString = `<h3>${xhr.response.results[j].name}</h3><p>${xhr.response.results[j].formatted_address}<p>`;
-          const infowindow = new google.maps.InfoWindow({
-            content: contentString,
-            maxWidth: 200
-          });
-
-          marker.addListener('click', () => {
-            if (this.infowindow) {
-              this.infowindow.close();
-            }
-
-            infowindow.open({
-              anchor: marker,
-              map: this.map
-            });
-
-            this.infowindow = infowindow;
-          });
-
-        }
-      }
-      initMap();
-
-      for (var i = 0; i < xhr.response.results.length; i++) {
-
-        idArray.push(xhr.response.results[i].place_id);
-
-        var $li = document.createElement('li');
-        var $a = document.createElement('a');
-        $li.className = 'result-item';
-        $li.setAttribute('id', i);
-        $li.appendChild($a);
-        $lists.appendChild($li);
-
-        var $storeName = document.createElement('h3');
-        $storeName.textContent = xhr.response.results[i].name;
-        $a.appendChild($storeName);
-
-        var $address = document.createElement('p');
-        $address.textContent = xhr.response.results[i].formatted_address;
-        $a.appendChild($address);
-
-        var $starRating = document.createElement('span');
-        $starRating.className = 'star-rating';
-
-        var val = (xhr.response.results[i].rating) * 10;
-        var fullStar = Math.floor(val / 10);
-        var halfStar = val % 10;
-        var emptyStar = 5 - fullStar - 1;
-
-        for (var k = 1; k <= fullStar; k++) {
-          var $fullStar = document.createElement('i');
-          $fullStar.className = 'fas fa-star';
-          $starRating.appendChild($fullStar);
-          $a.appendChild($starRating);
-        }
-
-        if (halfStar < 5 && fullStar < 5) {
-          var $emptyStar = document.createElement('i');
-          $emptyStar.className = 'far fa-star';
-          $starRating.appendChild($emptyStar);
-          $a.appendChild($starRating);
-        } else if (halfStar >= 5 && fullStar < 5) {
-          var $halfStar = document.createElement('i');
-          $halfStar.className = 'fas fa-star-half-alt';
-          $starRating.appendChild($halfStar);
-          $a.appendChild($starRating);
-        }
-
-        for (var m = 1; m <= emptyStar; m++) {
-          var $leftStar = document.createElement('i');
-          $leftStar.className = 'far fa-star';
-          $starRating.appendChild($leftStar);
-          $a.appendChild($starRating);
-        }
-
-        var $numberRating = document.createElement('span');
-        var ratingnum = xhr.response.results[i].rating;
-        var num = ratingnum.toFixed(1);
-        $numberRating.textContent = num;
-        $numberRating.className = 'number-rating';
-        $a.appendChild($numberRating);
-
-      }
-
+  for (let i = 0; i < data.results.length; i++) {
+    const marker = new google.maps.Marker({
+      position: data.results[i].geometry.location,
+      map: this.map
     });
-    xhr.send();
-    $homePage.className = 'hidden';
-    $resultPage.className = '';
-    $stores.className = 'hidden';
-    $favoritePage.className = 'hidden';
-    this.previousElementSibling.value = '';
-  });
-}
-// store information
-$lists.addEventListener('click', function (e) {
 
-  while ($storeImage.hasChildNodes()) {
-    $storeImage.removeChild($storeImage.firstChild);
-  }
-  while ($hours.hasChildNodes()) {
-    $hours.removeChild($hours.firstChild);
-  }
-  while ($location.hasChildNodes()) {
-    $location.removeChild($location.firstChild);
-  }
-  while ($reviewLists.hasChildNodes()) {
-    $reviewLists.removeChild($reviewLists.firstChild);
-  }
-  while ($photos.hasChildNodes()) {
-    $photos.removeChild($photos.firstChild);
-  }
+    const contentString = `<h3>${data.results[i].name}</h3><p>${data.results[i].formatted_address}<p>`;
+    const infowindow = new google.maps.InfoWindow({
+      content: contentString,
+      maxWidth: 200
+    });
 
-  $resultPage.className = 'hidden';
-  $stores.className = '';
-
-  var item = event.target.closest('.result-item');
-  var id = item.getAttribute('id');
-  var placeId = idArray[id];
-
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/details/json?place_id=' + placeId + '%26key=AIzaSyBN7ub3XQK_C2cDMilDHrT3yy02o3kYtAY');
-  xhr.responseType = 'json';
-  xhr.addEventListener('load', function () {
-    // store-header
-    var $storeBox = document.createElement('div');
-    var $storeTitle = document.createElement('h1');
-    $storeTitle.textContent = xhr.response.result.name;
-    $storeBox.className = 'store-info';
-    $storeTitle.className = 'store_title';
-    $storeBox.appendChild($storeTitle);
-    $storeImage.appendChild($storeBox);
-
-    var addToFavorite = {
-      name: xhr.response.result.name,
-      rating: xhr.response.result.rating
-    };
-
-    var $heart = document.createElement('i');
-    $storeBox.appendChild($heart);
-    if (containObject(data, addToFavorite)) {
-      $heart.className = 'fas fa-heart fa-lg';
-    } else {
-      $heart.className = 'far fa-heart fa-lg';
-    }
-    $storeImage.append($storeBox);
-
-    // rating
-    var $ratingBox = document.createElement('div');
-    var $starRating = document.createElement('span');
-    $ratingBox.appendChild($starRating);
-    $starRating.className = 'star-rating';
-    $ratingBox.className = 'rating-box';
-
-    var val = (xhr.response.result.rating) * 10;
-    var fullStar = Math.floor(val / 10);
-    var halfStar = val % 10;
-    var emptyStar = 5 - fullStar - 1;
-
-    for (var k = 1; k <= fullStar; k++) {
-      var $fullStar = document.createElement('i');
-      $fullStar.className = 'fas fa-star';
-      $starRating.appendChild($fullStar);
-      $ratingBox.appendChild($starRating);
-
-    }
-
-    if (halfStar < 5 && fullStar < 5) {
-      var $emptyStar = document.createElement('i');
-      $emptyStar.className = 'far fa-star';
-      $starRating.appendChild($emptyStar);
-      $ratingBox.appendChild($starRating);
-    } else if (halfStar >= 5 && fullStar < 5) {
-      var $halfStar = document.createElement('i');
-      $halfStar.className = 'fas fa-star-half-alt';
-      $starRating.appendChild($halfStar);
-      $ratingBox.appendChild($starRating);
-    }
-
-    for (var m = 1; m <= emptyStar; m++) {
-      var $leftStar = document.createElement('i');
-      $leftStar.className = 'far fa-star';
-      $starRating.appendChild($leftStar);
-      $ratingBox.appendChild($starRating);
-    }
-
-    var $numberRating = document.createElement('span');
-    var ratingnum = xhr.response.result.rating;
-    var num = ratingnum.toFixed(1);
-    $numberRating.textContent = num;
-    $numberRating.className = 'rating';
-    $ratingBox.appendChild($numberRating);
-    $storeImage.appendChild($ratingBox);
-
-    // photos
-    for (var n = 0; n < xhr.response.result.photos.length; n++) {
-      var $photoItem = document.createElement('li');
-      var $storePhoto = document.createElement('img');
-      $storePhoto.className = 'photo-item';
-      $storePhoto.setAttribute('src', 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=250&photo_reference=' + xhr.response.result.photos[n].photo_reference + '&key=AIzaSyBN7ub3XQK_C2cDMilDHrT3yy02o3kYtAY');
-      $photoItem.appendChild($storePhoto);
-      $photos.appendChild($photoItem);
-    }
-
-    // store hours
-    var $opening = document.createElement('h3');
-    $opening.textContent = 'Opening Hours';
-    $hours.appendChild($opening);
-    for (var i = 0; i < xhr.response.result.opening_hours.weekday_text.length; i++) {
-      var $openHours = document.createElement('p');
-      $openHours.textContent = xhr.response.result.opening_hours.weekday_text[i];
-      $hours.appendChild($openHours);
-    }
-    // store location
-    var $contact = document.createElement('h3');
-    $contact.textContent = 'Address & Phone';
-    $location.appendChild($contact);
-    var $address = document.createElement('p');
-    $address.textContent = 'Address: ' + xhr.response.result.formatted_address;
-    $location.appendChild($address);
-    var $phone = document.createElement('p');
-    $phone.textContent = 'Phone: ' + xhr.response.result.formatted_phone_number;
-    $location.appendChild($phone);
-
-    // review
-    for (var j = 0; j < xhr.response.result.reviews.length; j++) {
-      var $review = document.createElement('li');
-      var $profile = document.createElement('span');
-      var $content = document.createElement('span');
-      var $author = document.createElement('h4');
-      var $text = document.createElement('p');
-      var $image = document.createElement('img');
-      var $time = document.createElement('h5');
-      $image.setAttribute('src', xhr.response.result.reviews[j].profile_photo_url);
-      $profile.appendChild($image);
-      $author.textContent = xhr.response.result.reviews[j].author_name;
-      $text.textContent = xhr.response.result.reviews[j].text;
-      $time.textContent = xhr.response.result.reviews[j].relative_time_description;
-      $profile.className = 'profile';
-      $content.className = 'comment';
-      $content.appendChild($author);
-      $content.appendChild($text);
-      $content.appendChild($time);
-      $review.appendChild($profile);
-      $review.appendChild($content);
-      $reviewLists.appendChild($review);
-    }
-  });
-  xhr.send();
-});
-
-// add to favorites
-$storeImage.addEventListener('click', function (e) {
-
-  if (e.target.tagName !== 'I') {
-    return;
-  }
-
-  var rating = document.querySelector('.rating').textContent;
-  var storeName = event.target.previousElementSibling.textContent;
-  var addToFavorite = {
-    name: storeName,
-    rating: rating
-  };
-
-  if (containObject(data, addToFavorite) === false && e.target.className === 'far fa-heart fa-lg') {
-    data.unshift(addToFavorite);
-    e.target.className = 'fas fa-heart fa-lg';
-    var favoriteList = renderFavoriteList(addToFavorite);
-    $favoriteList.prepend(favoriteList);
-    update();
-    // remove from favorites
-  } else if (containObject(data, addToFavorite) === true && e.target.className === 'fas fa-heart fa-lg') {
-    for (var num = data.length - 1; num >= 0; num--) {
-      if (data[num].name === storeName) {
-        data.splice(num, 1);
-        $favoriteList.removeChild($favoriteList.childNodes[num]);
+    marker.addListener('click', () => {
+      if (this.infowindow) {
+        this.infowindow.close();
       }
-    }
-    e.target.className = 'far fa-heart fa-lg';
-    update();
+
+      infowindow.open({
+        anchor: marker,
+        map: this.map
+      });
+
+      this.infowindow = infowindow;
+    });
+
   }
-});
+};
 
-// Remove favorites in the favorites page
-$favoriteList.addEventListener('click', function (e) {
-  if (e.target.tagName !== 'I') {
-    return;
-  }
+// star rating
+function createStarRating(rating) {
+  const starRating = document.createElement('span');
+  starRating.className = 'star-rating';
 
-  var value = event.target.previousElementSibling.textContent;
-
-  for (var num = data.length - 1; num >= 0; num--) {
-    if (data[num].name === value) {
-      data.splice(num, 1);
-      $favoriteList.removeChild($favoriteList.childNodes[num]);
-    }
-  }
-  update();
-});
-
-// Favorites Page
-for (var list = data.length - 1; list >= 0; list--) {
-  var favList = renderFavoriteList(data[list]);
-  $favoriteList.prepend(favList);
-}
-
-function renderFavoriteList(favorite) {
-
-  var $favoriteItem = document.createElement('li');
-
-  var $storeBox = document.createElement('div');
-  var $storeTitle = document.createElement('p');
-  $storeTitle.textContent = favorite.name;
-  $storeBox.className = 'store-info';
-  $storeTitle.className = 'store_title';
-  $storeBox.appendChild($storeTitle);
-  $favoriteItem.appendChild($storeBox);
-
-  var $heart = document.createElement('i');
-  $heart.className = 'fas fa-heart fa-lg';
-  $storeBox.appendChild($heart);
-  $favoriteItem.append($storeBox);
-
-  var $ratingBox = document.createElement('div');
-  var $starRating = document.createElement('span');
-  $ratingBox.appendChild($starRating);
-  $starRating.className = 'star-rating';
-  $ratingBox.className = 'rating-box';
-
-  var val = (favorite.rating) * 10;
+  var val = rating * 10;
   var fullStar = Math.floor(val / 10);
   var halfStar = val % 10;
   var emptyStar = 5 - fullStar - 1;
 
   for (var k = 1; k <= fullStar; k++) {
-    var $fullStar = document.createElement('i');
-    $fullStar.className = 'fas fa-star';
-    $starRating.appendChild($fullStar);
-    $ratingBox.appendChild($starRating);
+    var fullStarIcon = document.createElement('i');
+    fullStarIcon.className = 'fas fa-star';
+    starRating.appendChild(fullStarIcon);
   }
 
   if (halfStar < 5 && fullStar < 5) {
-    var $emptyStar = document.createElement('i');
-    $emptyStar.className = 'far fa-star';
-    $starRating.appendChild($emptyStar);
-    $ratingBox.appendChild($starRating);
+    var emptyStarIcon = document.createElement('i');
+    emptyStarIcon.className = 'far fa-star';
+    starRating.appendChild(emptyStarIcon);
   } else if (halfStar >= 5 && fullStar < 5) {
-    var $halfStar = document.createElement('i');
-    $halfStar.className = 'fas fa-star-half-alt';
-    $starRating.appendChild($halfStar);
-    $ratingBox.appendChild($starRating);
+    var halfStarIcon = document.createElement('i');
+    halfStarIcon.className = 'fas fa-star-half-alt';
+    starRating.appendChild(halfStarIcon);
   }
 
   for (var m = 1; m <= emptyStar; m++) {
-    var $leftStar = document.createElement('i');
-    $leftStar.className = 'far fa-star';
-    $starRating.appendChild($leftStar);
-    $ratingBox.appendChild($starRating);
+    var leftStarIcon = document.createElement('i');
+    leftStarIcon.className = 'far fa-star';
+    starRating.appendChild(leftStarIcon);
   }
 
-  var $numberRating = document.createElement('span');
-  var ratingnum = favorite.rating;
-  var num = ratingnum;
-  $numberRating.textContent = num;
-  $numberRating.className = 'number-rating';
-  $ratingBox.appendChild($numberRating);
-  $favoriteItem.appendChild($ratingBox);
+  return starRating;
+}
 
-  return $favoriteItem;
+function createNumberRating(rating) {
+  const numberRating = document.createElement('span');
+  numberRating.className = 'number-rating';
+  const num = Number(rating).toFixed(1);
+  numberRating.textContent = num;
+
+  return numberRating;
+}
+
+// Attach the event listener to the button
+for (let i = 0; i < searchBtn.length; i++) {
+
+  searchBtn[i].addEventListener('click', function () {
+
+    if (idArray.length > 0) {
+      idArray = [];
+    }
+    while (lists.hasChildNodes()) {
+      lists.removeChild(lists.firstChild);
+    }
+
+    var zipcode = this.previousElementSibling.value;
+    fetchData(zipcode)
+      .then(searchResults)
+      .catch(error => {
+        console.error(error);
+      });
+
+    homePage.className = 'hidden';
+    resultPage.className = '';
+    stores.className = 'hidden';
+    favoritePage.className = 'hidden';
+    this.previousElementSibling.value = '';
+  });
+}
+
+function backToHome() {
+  homePage.className = 'row home';
+  favoritePage.className = 'hidden';
+  stores.className = 'hidden';
+  resultPage.className = 'hidden';
+}
+
+function goToFavorite() {
+  favoritePage.className = '';
+  stores.className = 'hidden';
+  homePage.className = 'hidden';
+  resultPage.className = 'hidden';
+}
+
+// store information
+lists.addEventListener('click', function (e) {
+  while (storeImage.hasChildNodes()) {
+    storeImage.removeChild(storeImage.firstChild);
+  }
+  while (hours.hasChildNodes()) {
+    hours.removeChild(hours.firstChild);
+  }
+  while (address.hasChildNodes()) {
+    address.removeChild(address.firstChild);
+  }
+  while (reviewLists.hasChildNodes()) {
+    reviewLists.removeChild(reviewLists.firstChild);
+  }
+  while (photo.hasChildNodes()) {
+    photo.removeChild(photo.firstChild);
+  }
+
+  resultPage.className = 'hidden';
+  stores.className = '';
+
+  var item = event.target.closest('.result-item');
+  var id = item.getAttribute('id');
+  var placeId = idArray[id];
+
+  fetch(`https://lfz-cors.herokuapp.com/?url=https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}%26key=${key}`)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Error: ' + response.status);
+      }
+    })
+    .then(listOfStores => {
+      const storeDetail = listOfStores.result;
+      renderStoreHeader(storeDetail, true);
+      renderPhotos(storeDetail);
+      renderStoreHours(storeDetail);
+      renderStoreLocation(storeDetail);
+      renderReviews(storeDetail);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+});
+
+// add and remove favorites, update localStorage
+const myfavoriteList = JSON.parse(localStorage.getItem('favorite-list')) || [];
+function updateLocalStorage() {
+  localStorage.setItem('favorite-list', JSON.stringify(myfavoriteList));
+}
+
+// add to favorite
+storeImage.addEventListener('click', e => {
+  if (e.target.tagName !== 'I') {
+    return;
+  }
+
+  const numberRating = parseFloat(document.querySelector('.number-rating').textContent);
+  const storeName = event.target.previousElementSibling.textContent;
+  const favorite = { name: storeName, rating: numberRating };
+  if (!containObject(myfavoriteList, favorite)) {
+    myfavoriteList.unshift(favorite);
+    e.target.className = 'fas fa-heart fa-lg';
+    const favoriteElement = renderFavoriteList(favorite);
+    favoriteLists.prepend(favoriteElement);
+    updateLocalStorage();
+  } else {
+    removeFavorite(name);
+    e.target.className = 'far fa-heart fa-lg';
+  }
+});
+
+// Remove favorites in the favorites page
+function removeFavorite(store) {
+  const index = myfavoriteList.findIndex(favorite => favorite.name === store);
+  if (index !== -1) {
+    myfavoriteList.splice(index, 1);
+    favoriteLists.removeChild(favoriteLists.childNodes[index]);
+    updateLocalStorage();
+  }
+}
+
+favoriteLists.addEventListener('click', e => {
+  if (e.target.tagName !== 'I') {
+    return;
+  }
+
+  const store = event.target.previousElementSibling.textContent;
+  removeFavorite(store);
+});
+
+myfavoriteList.slice().reverse().forEach(favorite => {
+  const favoriteElement = renderFavoriteList(favorite);
+  favoriteLists.prepend(favoriteElement);
+});
+
+function renderFavoriteList(favorite) {
+  const favoriteItem = document.createElement('li');
+
+  const storeBox = renderStoreHeader(favorite);
+  favoriteItem.appendChild(storeBox);
+
+  const stars = createStarRating(favorite.rating);
+  favoriteItem.appendChild(stars);
+  const numbers = createNumberRating(favorite.rating);
+  favoriteItem.appendChild(numbers);
+
+  return favoriteItem;
+}
+
+function renderStoreHeader(storeDetail, shouldIncludeRating = false) {
+  const storeBox = document.createElement('div');
+  const storeTitle = document.createElement('h1');
+  storeTitle.textContent = storeDetail.name;
+  storeBox.className = 'store-info';
+  storeTitle.className = 'store_title';
+  storeBox.appendChild(storeTitle);
+  storeImage.appendChild(storeBox);
+
+  const addToFavorite = {
+    name: storeDetail.name,
+    rating: storeDetail.rating
+  };
+
+  const heart = document.createElement('i');
+  storeBox.appendChild(heart);
+  if (containObject(myfavoriteList, addToFavorite)) {
+    heart.className = 'fas fa-heart fa-lg';
+  } else {
+    heart.className = 'far fa-heart fa-lg';
+  }
+
+  if (shouldIncludeRating) {
+    const starRating = createStarRating(storeDetail.rating);
+    storeImage.appendChild(starRating);
+    const numberRating = createNumberRating(storeDetail.rating);
+    storeImage.appendChild(numberRating);
+  }
+  return storeBox;
+}
+
+function renderPhotos(storeDetail) {
+  for (var n = 0; n < storeDetail.photos.length; n++) {
+    var photoItem = document.createElement('li');
+    var storePhoto = document.createElement('img');
+    storePhoto.className = 'photo-item';
+    storePhoto.setAttribute('src', `https://maps.googleapis.com/maps/api/place/photo?maxwidth=250&photo_reference=${storeDetail.photos[n].photo_reference}&key=${key}`);
+    photoItem.appendChild(storePhoto);
+    photo.appendChild(photoItem);
+  }
+}
+
+function renderStoreHours(storeDetail) {
+  var opening = document.createElement('h3');
+  opening.textContent = 'Opening Hours';
+  hours.appendChild(opening);
+  const weekdayText = storeDetail.current_opening_hours.weekday_text;
+  for (var i = 0; i < weekdayText.length; i++) {
+    var openHours = document.createElement('p');
+    openHours.textContent = weekdayText[i];
+    hours.appendChild(openHours);
+  }
+
+}
+
+function renderStoreLocation(storeDetail) {
+  var contact = document.createElement('h3');
+  contact.textContent = 'Address & Phone';
+  address.appendChild(contact);
+  var storeAddress = document.createElement('p');
+  storeAddress.textContent = 'Address: ' + storeDetail.formatted_address;
+  address.appendChild(storeAddress);
+  var phone = document.createElement('p');
+  phone.textContent = 'Phone: ' + storeDetail.formatted_phoneNumber;
+  address.appendChild(phone);
+}
+
+function renderReviews(storeDetail) {
+  for (var j = 0; j < storeDetail.reviews.length; j++) {
+    var review = document.createElement('li');
+    var profile = document.createElement('span');
+    var content = document.createElement('span');
+    var author = document.createElement('h4');
+    var text = document.createElement('p');
+    var image = document.createElement('img');
+    var time = document.createElement('h5');
+    image.setAttribute('src', storeDetail.reviews[j].profile_photo_url);
+    profile.appendChild(image);
+    author.textContent = storeDetail.reviews[j].author_name;
+    text.textContent = storeDetail.reviews[j].text;
+    time.textContent = storeDetail.reviews[j].relative_time_description;
+    profile.className = 'profile';
+    content.className = 'comment';
+    content.appendChild(author);
+    content.appendChild(text);
+    content.appendChild(time);
+    review.appendChild(profile);
+    review.appendChild(content);
+    reviewLists.appendChild(review);
+  }
 }
 
 function containObject(array, obj) {
-
-  for (var i = array.length - 1; i >= 0; i--) {
-    if (array[i].name === obj.name) {
-      return true;
-    }
-  }
-  return false;
+  return array.some(element => element.name === obj.name);
 }

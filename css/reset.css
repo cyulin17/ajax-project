@@ -9,6 +9,12 @@ body {
   padding: 0;
 }
 
+body {
+  font-family: 'Varela Round', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
 a {
   text-decoration: none;
 }
