@@ -21,4 +21,38 @@
     grid-template-columns: 3fr 1fr;
     margin: 0 auto;
   }
+
+  nav .favorites {
+    font-size: 20px;
+  }
+
+  nav .logo {
+    font-weight: 900;
+    font-size: 30px;
+  }
+
+  .home-search-container {
+    min-width: 600px;
+  }
+
+  p.text {
+    font-size: 28px;
+  }
+
+  .photo-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .photo-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .location-hours {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
 }

@@ -1,5 +1,4 @@
 /* global google */
-
 const searchBtn = document.querySelectorAll('.search');
 const logo = document.querySelector('.logo');
 const homePage = document.querySelector('[data-view="home-page"]');
@@ -18,7 +17,8 @@ const key = 'AIzaSyCYNjwc3_3oj7HchcYbacmPYqsTXHyKOSc';
 let idArray = [];
 
 // Handle Page
-logo.addEventListener('click', handlePage);
+logo.addEventListener('click', backToHome);
+favorites.addEventListener('click', goToFavorite);
 
 // Create a function to handle the API request and data processing
 async function fetchData(zipcode) {
@@ -176,10 +176,17 @@ for (let i = 0; i < searchBtn.length; i++) {
   });
 }
 
-function handlePage() {
+function backToHome() {
   homePage.className = 'row home';
   favoritePage.className = 'hidden';
   stores.className = 'hidden';
+  resultPage.className = 'hidden';
+}
+
+function goToFavorite() {
+  favoritePage.className = '';
+  stores.className = 'hidden';
+  homePage.className = 'hidden';
   resultPage.className = 'hidden';
 }
 
@@ -218,7 +225,7 @@ lists.addEventListener('click', function (e) {
     })
     .then(listOfStores => {
       const storeDetail = listOfStores.result;
-      renderStoreHeader(storeDetail);
+      renderStoreHeader(storeDetail, true);
       renderPhotos(storeDetail);
       renderStoreHours(storeDetail);
       renderStoreLocation(storeDetail);
@@ -230,90 +237,71 @@ lists.addEventListener('click', function (e) {
 });
 
 // add and remove favorites, update localStorage
-const myList = JSON.parse(localStorage.getItem('my-list')) || [];
-function update() {
-  localStorage.setItem('my-list', JSON.stringify(myList));
+const myfavoriteList = JSON.parse(localStorage.getItem('favorite-list')) || [];
+function updateLocalStorage() {
+  localStorage.setItem('favorite-list', JSON.stringify(myfavoriteList));
 }
 
-favorites.addEventListener('click', function () {
-
-  favoritePage.className = '';
-  stores.className = 'hidden';
-  homePage.className = 'hidden';
-  resultPage.className = 'hidden';
-
-});
-
-// add to favorites
-storeImage.addEventListener('click', function (e) {
-
+// add to favorite
+storeImage.addEventListener('click', e => {
   if (e.target.tagName !== 'I') {
     return;
   }
 
-  var numbers = document.querySelector('.number-rating').textContent;
-  var storeName = event.target.previousElementSibling.textContent;
-  var addToFavorite = {
-    name: storeName,
-    rating: numbers
-  };
-
-  if (containObject(myList, addToFavorite) === false && e.target.className === 'far fa-heart fa-lg') {
-    myList.unshift(addToFavorite);
+  const numberRating = parseFloat(document.querySelector('.number-rating').textContent);
+  const storeName = event.target.previousElementSibling.textContent;
+  const favorite = { name: storeName, rating: numberRating };
+  if (!containObject(myfavoriteList, favorite)) {
+    myfavoriteList.unshift(favorite);
     e.target.className = 'fas fa-heart fa-lg';
-    var favoriteList = renderFavoriteList(addToFavorite);
-    favoriteLists.prepend(favoriteList);
-    update();
-    // remove from favorites
-  } else if (containObject(myList, addToFavorite) === true && e.target.className === 'fas fa-heart fa-lg') {
-    for (var num = myList.length - 1; num >= 0; num--) {
-      if (myList[num].name === storeName) {
-        myList.splice(num, 1);
-        favoriteLists.removeChild(favoriteLists.childNodes[num]);
-      }
-    }
+    const favoriteElement = renderFavoriteList(favorite);
+    favoriteLists.prepend(favoriteElement);
+    updateLocalStorage();
+  } else {
+    removeFavorite(name);
     e.target.className = 'far fa-heart fa-lg';
-    update();
   }
 });
 
 // Remove favorites in the favorites page
-favoriteLists.addEventListener('click', function (e) {
+function removeFavorite(store) {
+  const index = myfavoriteList.findIndex(favorite => favorite.name === store);
+  if (index !== -1) {
+    myfavoriteList.splice(index, 1);
+    favoriteLists.removeChild(favoriteLists.childNodes[index]);
+    updateLocalStorage();
+  }
+}
+
+favoriteLists.addEventListener('click', e => {
   if (e.target.tagName !== 'I') {
     return;
   }
 
-  var value = event.target.previousElementSibling.textContent;
-
-  for (var num = myList.length - 1; num >= 0; num--) {
-    if (myList[num].name === value) {
-      myList.splice(num, 1);
-      favoriteLists.removeChild(favoriteLists.childNodes[num]);
-    }
-  }
-  update();
+  const store = event.target.previousElementSibling.textContent;
+  removeFavorite(store);
 });
 
-// Favorites Page
-for (var list = myList.length - 1; list >= 0; list--) {
-  var favList = renderFavoriteList(myList[list]);
-  favoriteLists.prepend(favList);
-}
+myfavoriteList.slice().reverse().forEach(favorite => {
+  const favoriteElement = renderFavoriteList(favorite);
+  favoriteLists.prepend(favoriteElement);
+});
 
 function renderFavoriteList(favorite) {
   const favoriteItem = document.createElement('li');
 
   const storeBox = renderStoreHeader(favorite);
-  const stars = createStarRating(favorite.rating);
-  const numbers = createNumberRating(favorite.rating);
   favoriteItem.appendChild(storeBox);
+
+  const stars = createStarRating(favorite.rating);
   favoriteItem.appendChild(stars);
+  const numbers = createNumberRating(favorite.rating);
   favoriteItem.appendChild(numbers);
 
   return favoriteItem;
 }
 
-function renderStoreHeader(storeDetail) {
+function renderStoreHeader(storeDetail, shouldIncludeRating = false) {
   const storeBox = document.createElement('div');
   const storeTitle = document.createElement('h1');
   storeTitle.textContent = storeDetail.name;
@@ -329,17 +317,18 @@ function renderStoreHeader(storeDetail) {
 
   const heart = document.createElement('i');
   storeBox.appendChild(heart);
-  if (containObject(myList, addToFavorite)) {
+  if (containObject(myfavoriteList, addToFavorite)) {
     heart.className = 'fas fa-heart fa-lg';
   } else {
     heart.className = 'far fa-heart fa-lg';
   }
 
-  const starRating = createStarRating(storeDetail.rating);
-  storeImage.appendChild(starRating);
-  const numberRating = createNumberRating(storeDetail.rating);
-  storeImage.appendChild(numberRating);
-
+  if (shouldIncludeRating) {
+    const starRating = createStarRating(storeDetail.rating);
+    storeImage.appendChild(starRating);
+    const numberRating = createNumberRating(storeDetail.rating);
+    storeImage.appendChild(numberRating);
+  }
   return storeBox;
 }
 
@@ -405,14 +394,5 @@ function renderReviews(storeDetail) {
 }
 
 function containObject(array, obj) {
-  if (!array || !obj) {
-    return false;
-  }
-
-  for (var i = array.length - 1; i >= 0; i--) {
-    if (array[i].name === obj.name) {
-      return true;
-    }
-  }
-  return false;
+  return array.some(element => element.name === obj.name);
 }
