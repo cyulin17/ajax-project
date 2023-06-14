@@ -177,7 +177,7 @@ for (let i = 0; i < searchBtn.length; i++) {
 }
 
 function backToHome() {
-  homePage.className = 'row home';
+  homePage.className = 'hero-container';
   favoritePage.className = 'hidden';
   stores.className = 'hidden';
   resultPage.className = 'hidden';
