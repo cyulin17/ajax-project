@@ -35,9 +35,9 @@
     min-width: 600px;
   }
 
-  p.text {
+  /* p.text {
     font-size: 28px;
-  }
+  } */
 
   .photo-container {
     display: flex;
