@@ -1,4 +1,5 @@
 /* global google */
+const getUserPosition = document.querySelector('.position-arrow');
 const searchBtn = document.querySelectorAll('.search');
 const logo = document.querySelector('.logo');
 const homePage = document.querySelector('[data-view="home-page"]');
@@ -15,6 +16,31 @@ const favoriteLists = document.getElementById('favorite-list');
 const favorites = document.querySelector('.favorites');
 const key = 'AIzaSyCYNjwc3_3oj7HchcYbacmPYqsTXHyKOSc';
 let idArray = [];
+
+getUserPosition.addEventListener('click', getUserCurrentPosition);
+
+// check user's current location
+function getUserCurrentPosition() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        const currentLat = position.coords.latitude;
+        const currentLng = position.coords.longitude;
+
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentLat},${currentLng}&key=${key}`)
+          .then(res => res.json())
+          .then(currentPosition => {
+            const zipcodeComponent = currentPosition.results[0].address_components.find(components => components.types.includes('postal_code'));
+            if (zipcodeComponent) {
+              const zipcode = zipcodeComponent.short_name;
+              document.querySelector('input[name="search"]').value = zipcode;
+            }
+          })
+          .catch(error => console.error(error));
+      }
+    );
+  }
+}
 
 // Handle Page
 logo.addEventListener('click', backToHome);

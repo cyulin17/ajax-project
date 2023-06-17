@@ -31,7 +31,8 @@ a {
 
 a,
 button,
-.fa-heart {
+.fa-heart,
+.position-arrow {
   cursor: pointer;
 }
 
@@ -319,6 +320,32 @@ i.far:hover {
   align-items: center;
   height: 60px;
   background-color: rgba(253, 183, 31, 0.411);
+}
+
+/* tooptip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  top: -5px;
+  left: 105%;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 
 footer {
